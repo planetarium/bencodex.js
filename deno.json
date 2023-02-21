@@ -1,0 +1,21 @@
+{
+  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+  "imports": {
+    "std/": "https://deno.land/std@0.177.0/"
+  },
+  "checkJs": true,
+  "compilerOptions": {
+    "allowJs": false,
+    "strict": true
+  },
+  "fmt": {
+    "options": {
+      "lineWidth": 80
+    }
+  },
+  "tasks": {
+    "test": "deno test --allow-read=test/__snapshots__/",
+    "test-update": "deno task test --allow-write=test/__snapshots__/ -- --update",
+    "dev": "deno task test --watch"
+  }
+}
