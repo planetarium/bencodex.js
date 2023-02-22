@@ -9,7 +9,7 @@ import {
 } from "std/testing/asserts.ts";
 import { assertSnapshot } from "std/testing/snapshot.ts";
 import { BencodexDictionary } from "../src/dict.ts";
-import { Key, Value } from "../src/types.ts";
+import { type Key, type Value } from "../src/types.ts";
 import { areUint8ArraysEqual } from "../src/utils.ts";
 
 Deno.test("BencodexDictionary", async (t) => {

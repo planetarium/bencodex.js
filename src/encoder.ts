@@ -1,4 +1,15 @@
-import { areKeysEqual, isKey, Key, Value } from "./types.ts";
+/**
+ * This module contains functions for encoding values into bytes.
+ * @module
+ */
+
+import {
+  areKeysEqual,
+  compareKeys,
+  isKey,
+  type Key,
+  type Value,
+} from "./types.ts";
 import {
   binaryLengthDelimiter,
   dictionaryPrefix,
@@ -13,7 +24,6 @@ import {
   textPrefix,
   trueAtom,
 } from "./consts.ts";
-import { compareUint8Arrays } from "./utils.ts";
 
 const textEncoder = new TextEncoder();
 
@@ -102,28 +112,6 @@ export function* encodeIntoChunks(
       "Bencodex does not support floating-point numbers; use bigint instead",
     );
   } else throw new TypeError(`Invalid value type: ${typeof value}`);
-}
-
-/**
- * Compares two keys in the specified order in the Bencodex specification.
- * @param a A key to compare.
- * @param b Another key to compare.
- * @returns A negative number if `a` is former than `b`, zero if `a` is equal to
- *         `b`, or a positive number if `a` is latter than `b`.
- * @throws {TypeError} When any of the given keys is neither a `string` nor
- *         a {@link Uint8Array}.
- */
-export function compareKeys(a: Key, b: Key): number {
-  if (typeof a === "string") {
-    if (typeof b === "string") return a < b ? -1 : a === b ? 0 : 1;
-    else if (b instanceof Uint8Array) return 1;
-    throw new TypeError(`Invalid key type: ${typeof b}`);
-  } else if (a instanceof Uint8Array) {
-    if (typeof b === "string") return -1;
-    else if (b instanceof Uint8Array) return compareUint8Arrays(a, b);
-    throw new TypeError(`Invalid key type: ${typeof b}`);
-  }
-  throw new TypeError(`Invalid key type: ${typeof a}`);
 }
 
 /**

@@ -1,4 +1,11 @@
-import { areUint8ArraysEqual } from "./utils.ts";
+/**
+ * This module provides a basic type definitions for Bencodex, and some utility
+ * functions for them.
+ *
+ * @module
+ */
+
+import { areUint8ArraysEqual, compareUint8Arrays } from "./utils.ts";
 
 /**
  * Represents a value which can be used as a key in a Bencodex dictionary.
@@ -114,4 +121,26 @@ export function areKeysEqual(a: Key, b: Key): boolean {
     return b instanceof Uint8Array && areUint8ArraysEqual(a, b);
   }
   return false;
+}
+
+/**
+ * Compares two keys in the specified order in the Bencodex specification.
+ * @param a A key to compare.
+ * @param b Another key to compare.
+ * @returns A negative number if `a` is former than `b`, zero if `a` is equal to
+ *         `b`, or a positive number if `a` is latter than `b`.
+ * @throws {TypeError} When any of the given keys is neither a `string` nor
+ *         a {@link Uint8Array}.
+ */
+export function compareKeys(a: Key, b: Key): number {
+  if (typeof a === "string") {
+    if (typeof b === "string") return a < b ? -1 : a === b ? 0 : 1;
+    else if (b instanceof Uint8Array) return 1;
+    throw new TypeError(`Invalid key type: ${typeof b}`);
+  } else if (a instanceof Uint8Array) {
+    if (typeof b === "string") return -1;
+    else if (b instanceof Uint8Array) return compareUint8Arrays(a, b);
+    throw new TypeError(`Invalid key type: ${typeof b}`);
+  }
+  throw new TypeError(`Invalid key type: ${typeof a}`);
 }

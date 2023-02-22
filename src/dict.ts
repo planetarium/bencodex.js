@@ -1,8 +1,19 @@
+/**
+ * This module provides a {@link BencodexDictionary} class which implements
+ * {@link Dictionary} interface.  Although an encoder can take any object
+ * implementing the {@link Dictionary} interface (e.g., a {@link Map} object),
+ * a decoder always represents a Bencodex dictionary as
+ * a {@link BencodexDictionary} so that it can guarantee the sensible behavior
+ * according to the Bencodex specification.
+ *
+ * @module
+ */
+
 import {
   decode,
   encode,
 } from "https://deno.land/std@0.177.0/encoding/ascii85.ts";
-import { Dictionary, Key, Value } from "./types.ts";
+import { type Dictionary, type Key, type Value } from "./types.ts";
 import { areUint8ArraysEqual } from "./utils.ts";
 
 const SHORT_BINARY_THRESHOLD = 32;
