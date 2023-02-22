@@ -26,6 +26,11 @@ implementation(s):
     tests besides spec test suite, and we've done the best to reach near-100%
     test coverage.
 
+ -  *Reducing unnecessary memcpy*:  Instead of creating chunks of `Uint8Array`s
+    and then allocating a large buffer to concatenate the whole data once again,
+    it allocates only the necessary buffer only once.  It is not just
+    memory-efficient, also time-efficient as memcpy quite takes time.
+
  -  *Proper binary keys*:  It does not simply depend on
     `Map<Uint8Array | string, ...>`, which compares its `Uint8Array` keys by
     reference equality.  Instead, it implements its own proper dictionary which

@@ -2,7 +2,7 @@
  * This façade module exports the public API of this package.
  * @module
  */
-export { encodeInto, estimateSize } from "./src/encoder.ts";
+export { encode, encodeInto, estimateSize } from "./src/encoder.ts";
 export {
   areKeysEqual,
   type Dictionary,

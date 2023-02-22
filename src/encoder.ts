@@ -62,6 +62,26 @@ export interface EncodingState {
 }
 
 /**
+ * Encodes a Bencodex value and returns the encoded bytes.
+ * @param value A Bencodex value to encode.
+ * @param options Encoding options.
+ * @returns The encoded bytes.
+ * @throws {TypeError} When any value in the whole tree is not a valid Bencodex.
+ * @throws {RangeError} When any {@link Dictionary} in the whole tree has
+ *                      duplicate keys, and `options.onDuplicateKeys` is
+ *                      `"throw"`.
+ */
+export function encode(
+  value: Value,
+  options: EncodingOptions = {},
+): Uint8Array {
+  const size = estimateSize(value);
+  const buffer = new Uint8Array(size);
+  const { written } = encodeInto(value, buffer, options);
+  return buffer.subarray(0, written);
+}
+
+/**
  * Encodes a value into the given buffer.
  * @param value A value to encode.
  * @param buffer A buffer that the encoded value will be written into.  This
