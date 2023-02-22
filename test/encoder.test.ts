@@ -5,7 +5,12 @@ import {
   assertStrictEquals,
   assertThrows,
 } from "std/testing/asserts.ts";
-import { encodeInto, encodeKeyInto } from "../src/encoder.ts";
+import {
+  encodeInto,
+  encodeKeyInto,
+  estimateKeySize,
+  estimateSize,
+} from "../src/encoder.ts";
 import { type Dictionary, type Key, type Value } from "../src/types.ts";
 
 Deno.test("encodeInto()", async (t: Deno.TestContext) => {
@@ -350,5 +355,86 @@ Deno.test("encodeKeyInto()", async (t: Deno.TestContext) => {
       TypeError,
     );
     assertEquals(buffer, new Uint8Array(8).fill(0x80));
+  });
+});
+
+Deno.test("estimateSize()", async (t: Deno.TestContext) => {
+  await t.step("Key", () => {
+    assertStrictEquals(estimateSize("단팥"), 9);
+    assertStrictEquals(estimateSize(new Uint8Array(16)), 19);
+  });
+
+  await t.step("null", () => assertStrictEquals(estimateSize(null), 1));
+  await t.step("true", () => assertStrictEquals(estimateSize(true), 1));
+  await t.step("false", () => assertStrictEquals(estimateSize(false), 1));
+
+  await t.step("bigint", () => {
+    assertStrictEquals(estimateSize(123n), 5);
+    assertStrictEquals(estimateSize(-456n), 6);
+  });
+
+  await t.step("Array", () => {
+    assertStrictEquals(estimateSize([]), 2);
+    assertStrictEquals(estimateSize([1n, 2n, 3n]), 11);
+    assertStrictEquals(estimateSize(["asdf", new Uint8Array(2), []]), 15);
+  });
+
+  await t.step("Dictionary", () => {
+    assertStrictEquals(estimateSize(new Map()), 2);
+    assertStrictEquals(
+      estimateSize(
+        new Map<Key, Value>([
+          ["단팥", 123n],
+          [new TextEncoder().encode("span"), null],
+          [new TextEncoder().encode("spam"), true],
+        ]),
+      ),
+      30,
+    );
+  });
+
+  await t.step("Dictionary invalid entries", () => {
+    assertThrows(
+      () =>
+        estimateSize({
+          *entries() {
+            yield [];
+          },
+        } as unknown as Dictionary),
+      TypeError,
+    );
+  });
+
+  await t.step("invalid value", () => {
+    assertThrows(
+      () => estimateSize(123 as unknown as Value),
+      TypeError,
+      "floating-point",
+    );
+    assertThrows(
+      () => estimateSize(new Date() as unknown as Value),
+      TypeError,
+    );
+  });
+});
+
+Deno.test("estimateKeySize()", async (t: Deno.TestContext) => {
+  await t.step("string", () => {
+    assertStrictEquals(estimateKeySize("hello"), 8);
+    assertStrictEquals(estimateKeySize("단팥"), 9);
+  });
+
+  await t.step("Uint8Array", () => {
+    assertStrictEquals(estimateKeySize(new Uint8Array(0)), 2);
+    assertStrictEquals(estimateKeySize(new Uint8Array(1)), 3);
+    assertStrictEquals(estimateKeySize(new Uint8Array(128)), 132);
+  });
+
+  await t.step("invalid key", () => {
+    assertThrows(
+      () => estimateKeySize(123 as unknown as Key),
+      TypeError,
+      "string or Uint8Array",
+    );
   });
 });

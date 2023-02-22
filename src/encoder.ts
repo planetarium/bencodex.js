@@ -146,7 +146,7 @@ export function encodeInto(
     buffer[0] = dictionaryPrefix;
     let totalWritten = 1;
     let prevKey: Key | undefined;
-    for (const [key, value] of entries) {
+    for (const [key, val] of entries) {
       if (prevKey != null && areKeysEqual(key, prevKey)) {
         if (
           options.onDuplicateKeys === "throw" || options.onDuplicateKeys == null
@@ -166,7 +166,7 @@ export function encodeInto(
       totalWritten += keyWritten;
       if (!keyComplete) return { written: totalWritten, complete: false };
       const { written: valueWritten, complete: valueComplete } = encodeInto(
-        value,
+        val,
         buffer.subarray(totalWritten),
         options,
       );
@@ -239,4 +239,74 @@ export function encodeKeyInto(
       `Invalid key type: ${typeof key}; expected string or Uint8Array`,
     );
   }
+}
+
+/**
+ * Estimates the byte size of the given value in Bencodex.
+ *
+ * Note that this function does not guarantee the exact size of the value
+ * when encoded in Bencodex, but it is guaranteed to be greater than or equal
+ * to the actual size.  In particular, this function does not take into
+ * account the size of the dictionary with duplicate keys.
+ * @param value A Bencodex value to estimate the size.
+ * @returns The estimated byte size of the given value.
+ * @throws {TypeError} When the given value is not a valid Bencodex value.
+ */
+export function estimateSize(value: Value): number {
+  if (isKey(value)) return estimateKeySize(value);
+  if (value === null || typeof value == "boolean") return 1;
+  if (typeof value === "bigint") {
+    const asciiSize = value.toString().length;
+    return 1 + asciiSize + asciiSize.toString().length;
+  }
+  if (Array.isArray(value)) {
+    let size = 2;
+    for (const item of value) {
+      size += estimateSize(item);
+    }
+    return size;
+  }
+  if (value?.entries instanceof Function) {
+    let size = 2;
+    for (const pair of value.entries()) {
+      if (!Array.isArray(pair) || pair.length !== 2) {
+        throw new TypeError(
+          "Invalid dictionary; expected entries() to return " +
+            "an iterable of [key, value] pairs",
+        );
+      }
+      const [key, val] = pair;
+      size += estimateKeySize(key as unknown as Key);
+      size += estimateSize(val);
+    }
+    return size;
+  }
+  if (typeof value === "number") {
+    throw new TypeError(
+      "Bencodex does not support floating-point numbers; use bigint instead",
+    );
+  }
+  throw new TypeError(`Invalid value type: ${typeof value}`);
+}
+
+/**
+ * Estimates the byte size of the given key in Bencodex.
+ * @param key A Bencodex dictionary key to estimate the size.
+ * @returns The estimated byte size of the given key.
+ * @throws {TypeError} When the given key is neither a `string` nor
+ *         a {@link Uint8Array}.
+ */
+export function estimateKeySize(key: Key): number {
+  if (typeof key === "string") {
+    // NOTE: The below code looks tricky, but it is actually the quickest way
+    // to estimate the length of the UTF-8 encoded string, and it even does
+    // not allocate any memory:
+    const utf8Length = new Blob([key]).size;
+    return 2 + utf8Length + utf8Length.toString().length;
+  } else if (key instanceof Uint8Array) {
+    return 1 + key.length + key.length.toString().length;
+  }
+  throw new TypeError(
+    `Invalid key type: ${typeof key}; expected string or Uint8Array`,
+  );
 }
