@@ -1,3 +1,5 @@
+import { areUint8ArraysEqual } from "./utils.ts";
+
 /**
  * Represents a value which can be used as a key in a Bencodex dictionary.
  */
@@ -92,4 +94,24 @@ export interface Dictionary extends Iterable<[Key, Value]> {
  */
 export function isKey(value: unknown): value is Key {
   return typeof value === "string" || value instanceof Uint8Array;
+}
+
+/**
+ * Checks if the given keys have the same type and the same contents.  In other
+ * words, this function checks if the given keys are encoded in the same
+ * Bencodex data.
+ * @param a A key to compare.
+ * @param b Another key to compare.
+ * @returns `true` iff the given keys have the same type and the same contents.
+ *          It returns `false` when the given keys have invalid types even if
+ *          they have the same contents, e.g., `areKeysEqual(1, 1)` returns
+ *          `false`.
+ */
+export function areKeysEqual(a: Key, b: Key): boolean {
+  if (typeof a === "string") {
+    return typeof b === "string" && a === b;
+  } else if (a instanceof Uint8Array) {
+    return b instanceof Uint8Array && areUint8ArraysEqual(a, b);
+  }
+  return false;
 }

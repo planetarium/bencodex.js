@@ -1,0 +1,14 @@
+export const nullAtom = 0x6e; // 'n'
+export const falseAtom = 0x66; // 'f'
+export const trueAtom = 0x74; // 't'
+const suffix = 0x65; // 'e'
+export const integerPrefix = 0x69; // 'i'
+export const integerSuffix = suffix;
+const lengthDelimiter = 0x3a; // ':'
+export const textPrefix = 0x75; // 'u'
+export const textLengthDelimiter = lengthDelimiter;
+export const binaryLengthDelimiter = lengthDelimiter;
+export const listPrefix = 0x6c; // 'l'
+export const listSuffix = suffix;
+export const dictionaryPrefix = 0x64; // 'd'
+export const dictionarySuffix = suffix;
