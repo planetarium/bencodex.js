@@ -33,34 +33,89 @@ const textEncoder = new TextEncoder();
 export interface EncodingOptions {
   /**
    * How to handle duplicate keys in dictionaries.  If omitted, defaults to
-   * `"throw"`.
+   * `"throw"`.  If `"throw"` is specified, a {@link RangeError} will be thrown
+   * when a dictionary has duplicate keys.
    */
   onDuplicateKeys?: "throw" | "useFirst" | "useLast";
 }
 
 /**
- * Encodes a value into chunks of bytes.
- * @param value A value to encode.
- * @param options Encoding options.
+ * Represents the end state of encoding.
  */
-export function* encodeIntoChunks(
+export interface EncodingState {
+  /**
+   * The number of bytes written into the buffer.
+   */
+  readonly written: number;
+
+  /**
+   * Whether the encoding is complete.
+   *
+   * If `true`, the encoding is complete and the buffer is filled with the
+   * encoded value.
+   *
+   * If `false`, the encoding is not complete and the buffer is filled with
+   * the encoded value as much as possible.  In this case, you should call
+   * {@link encodeInto} again with the same value and a new larger buffer.
+   */
+  readonly complete: boolean;
+}
+
+/**
+ * Encodes a value into the given buffer.
+ * @param value A value to encode.
+ * @param buffer A buffer that the encoded value will be written into.  This
+ *               buffer will be modified.
+ * @param options Encoding options.
+ * @returns The object which indicates the number of bytes written into the
+ *          buffer and whether the encoding is complete.
+ * @throws {TypeError} When any value in the whole tree is not a valid Bencodex.
+ * @throws {RangeError} When any {@link Dictionary} in the whole tree has
+ *                      duplicate keys, and `options.onDuplicateKeys` is
+ *                      `"throw"`.
+ */
+export function encodeInto(
   value: Value,
+  buffer: Uint8Array,
   options: EncodingOptions = {},
-): Iterable<Uint8Array> {
-  if (isKey(value)) yield* encodeKeyIntoChunks(value);
-  else if (value === null) yield new Uint8Array([nullAtom]);
-  else if (value === false) yield new Uint8Array([falseAtom]);
-  else if (value === true) yield new Uint8Array([trueAtom]);
-  else if (typeof value === "bigint") {
-    yield new Uint8Array([integerPrefix]);
-    yield textEncoder.encode(value.toString());
-    yield new Uint8Array([integerSuffix]);
-  } else if (Array.isArray(value)) {
-    yield new Uint8Array([listPrefix]);
-    for (const item of value) yield* encodeIntoChunks(item);
-    yield new Uint8Array([listSuffix]);
-  } else if (value?.entries instanceof Function) {
-    yield new Uint8Array([dictionaryPrefix]);
+): EncodingState {
+  if (buffer.length < 1) return { written: 0, complete: false };
+  if (value === null || typeof value === "boolean") {
+    if (value === null) buffer[0] = nullAtom;
+    else if (value === false) buffer[0] = falseAtom;
+    else buffer[0] = trueAtom;
+    return { written: 1, complete: true };
+  }
+  if (isKey(value)) return encodeKeyInto(value, buffer);
+  if (typeof value === "bigint") {
+    buffer[0] = integerPrefix;
+    const numericStr = value.toString();
+    const { written } = textEncoder.encodeInto(numericStr, buffer.subarray(1));
+    if (buffer.length < numericStr.length + 2) {
+      return { written: written + 1, complete: false };
+    }
+    buffer[written + 1] = integerSuffix;
+    return { written: written + 2, complete: true };
+  }
+  if (Array.isArray(value)) {
+    buffer[0] = listPrefix;
+    let totalWritten = 1;
+    for (const item of value) {
+      const { written, complete } = encodeInto(
+        item,
+        buffer.subarray(totalWritten),
+        options,
+      );
+      totalWritten += written;
+      if (!complete) return { written: totalWritten, complete: false };
+    }
+    if (buffer.length < totalWritten + 1) {
+      return { written: totalWritten, complete: false };
+    }
+    buffer[totalWritten] = listSuffix;
+    return { written: totalWritten + 1, complete: true };
+  }
+  if (value?.entries instanceof Function) {
     const entries: [Key, Value, number][] = [];
     let i = 0;
     for (const pair of value.entries()) {
@@ -88,6 +143,8 @@ export function* encodeIntoChunks(
       }
       return cmp;
     });
+    buffer[0] = dictionaryPrefix;
+    let totalWritten = 1;
     let prevKey: Key | undefined;
     for (const [key, value] of entries) {
       if (prevKey != null && areKeysEqual(key, prevKey)) {
@@ -102,36 +159,81 @@ export function* encodeIntoChunks(
           continue;
         }
       }
-      yield* encodeKeyIntoChunks(key);
-      yield* encodeIntoChunks(value);
+      const { written: keyWritten, complete: keyComplete } = encodeKeyInto(
+        key,
+        buffer.subarray(totalWritten),
+      );
+      totalWritten += keyWritten;
+      if (!keyComplete) return { written: totalWritten, complete: false };
+      const { written: valueWritten, complete: valueComplete } = encodeInto(
+        value,
+        buffer.subarray(totalWritten),
+        options,
+      );
+      totalWritten += valueWritten;
+      if (!valueComplete) return { written: totalWritten, complete: false };
       prevKey = key;
     }
-    yield new Uint8Array([dictionarySuffix]);
-  } else if (typeof value === "number") {
+    if (buffer.length < totalWritten + 1) {
+      return { written: totalWritten, complete: false };
+    }
+    buffer[totalWritten] = dictionarySuffix;
+    return { written: totalWritten + 1, complete: true };
+  }
+  if (typeof value === "number") {
     throw new TypeError(
       "Bencodex does not support floating-point numbers; use bigint instead",
     );
-  } else throw new TypeError(`Invalid value type: ${typeof value}`);
+  }
+  throw new TypeError(`Invalid value type: ${typeof value}`);
 }
 
 /**
- * Encodes a key into chunks.
+ * Encodes a key into the given buffer.
  * @param key A key to encode.
- * @returns An iterable of chunks.
+ * @param buffer A buffer that the encoded key will be written into.  This
+ *               buffer will be modified.
+ * @returns The object which indicates the number of bytes written into the
+ *          buffer and whether the encoding is complete.
  * @throws {TypeError} When the given key is neither a `string` nor
  *         a {@link Uint8Array}.
  */
-export function* encodeKeyIntoChunks(key: Key): Iterable<Uint8Array> {
+export function encodeKeyInto(
+  key: Key,
+  buffer: Uint8Array,
+): EncodingState {
+  const bufferSize = buffer.length;
   if (typeof key === "string") {
-    yield new Uint8Array([textPrefix]);
-    const encoded = textEncoder.encode(key);
-    yield textEncoder.encode(encoded.length.toString());
-    yield new Uint8Array([textLengthDelimiter]);
-    yield encoded;
+    if (bufferSize < 1) return { written: 0, complete: false };
+    buffer[0] = textPrefix;
+    // NOTE: The below code looks tricky, but it is actually the quickest way
+    // to estimate the length of the UTF-8 encoded string, and it even does
+    // not allocate any memory:
+    const utf8Length = new Blob([key]).size;
+    const lengthStr = utf8Length.toString();
+    const { written } = textEncoder.encodeInto(lengthStr, buffer.subarray(1));
+    if (bufferSize < lengthStr.length + 2) {
+      return { written: written + 1, complete: false };
+    }
+    buffer[written + 1] = textLengthDelimiter;
+    const { written: contentWritten } = textEncoder.encodeInto(
+      key,
+      buffer.subarray(written + 2),
+    );
+    if (bufferSize < written + 2 + utf8Length) {
+      return { written: written + 2 + contentWritten, complete: false };
+    }
+    return { written: written + 2 + utf8Length, complete: true };
   } else if (key instanceof Uint8Array) {
-    yield textEncoder.encode(key.length.toString());
-    yield new Uint8Array([binaryLengthDelimiter]);
-    yield key;
+    const lengthStr = key.length.toString();
+    const { written } = textEncoder.encodeInto(lengthStr, buffer);
+    if (bufferSize < lengthStr.length + 1) return { written, complete: false };
+    buffer[written] = binaryLengthDelimiter;
+    buffer.set(key.subarray(0, buffer.length - 1 - written), 1 + written);
+    if (buffer.length < 1 + written + key.length) {
+      return { written: buffer.length, complete: false };
+    }
+    return { written: 1 + written + key.length, complete: true };
   } else {
     throw new TypeError(
       `Invalid key type: ${typeof key}; expected string or Uint8Array`,
