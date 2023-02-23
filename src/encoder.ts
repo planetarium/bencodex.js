@@ -28,7 +28,7 @@ import {
 const textEncoder = new TextEncoder();
 
 /**
- * Options for encoding.
+ * Options for {@link encode} function.
  */
 export interface EncodingOptions {
   /**
@@ -75,10 +75,27 @@ export function encode(
   value: Value,
   options: EncodingOptions = {},
 ): Uint8Array {
-  const size = estimateSize(value);
+  const size = estimateSize(value, { accuracy: "fastGuess" });
   const buffer = new Uint8Array(size);
-  const { written } = encodeInto(value, buffer, options);
+  const { written } = encodeInto(value, buffer, {
+    ...options,
+    speculative: true,
+  });
   return buffer.subarray(0, written);
+}
+
+/**
+ * Options for {@link encodeInto} and {@link encodeKeyInto} functions.
+ */
+export interface NonAllocEncodingOptions extends EncodingOptions {
+  /**
+   * Whether to encode the value speculatively.  If omitted, defaults to
+   * `false`.  If `true` is specified, the given buffer can be filled
+   * some incorrect bytes when the encoding is not complete.  Even if
+   * `true` is specified, the buffer will be filled with the correct bytes
+   * when the encoding is complete.
+   */
+  speculative?: boolean;
 }
 
 /**
@@ -97,7 +114,7 @@ export function encode(
 export function encodeInto(
   value: Value,
   buffer: Uint8Array,
-  options: EncodingOptions = {},
+  options: NonAllocEncodingOptions = {},
 ): EncodingState {
   if (buffer.length < 1) return { written: 0, complete: false };
   if (value === null || typeof value === "boolean") {
@@ -106,7 +123,7 @@ export function encodeInto(
     else buffer[0] = trueAtom;
     return { written: 1, complete: true };
   }
-  if (isKey(value)) return encodeKeyInto(value, buffer);
+  if (isKey(value)) return encodeKeyInto(value, buffer, options);
   if (typeof value === "bigint") {
     buffer[0] = integerPrefix;
     const numericStr = value.toString();
@@ -182,6 +199,7 @@ export function encodeInto(
       const { written: keyWritten, complete: keyComplete } = encodeKeyInto(
         key,
         buffer.subarray(totalWritten),
+        options,
       );
       totalWritten += keyWritten;
       if (!keyComplete) return { written: totalWritten, complete: false };
@@ -213,6 +231,7 @@ export function encodeInto(
  * @param key A key to encode.
  * @param buffer A buffer that the encoded key will be written into.  This
  *               buffer will be modified.
+ * @param options Encoding options.
  * @returns The object which indicates the number of bytes written into the
  *          buffer and whether the encoding is complete.
  * @throws {TypeError} When the given key is neither a `string` nor
@@ -221,29 +240,45 @@ export function encodeInto(
 export function encodeKeyInto(
   key: Key,
   buffer: Uint8Array,
+  options: NonAllocEncodingOptions = {},
 ): EncodingState {
   const bufferSize = buffer.length;
   if (typeof key === "string") {
     if (bufferSize < 1) return { written: 0, complete: false };
     buffer[0] = textPrefix;
-    // NOTE: The below code looks tricky, but it is actually the quickest way
-    // to estimate the length of the UTF-8 encoded string, and it even does
-    // not allocate any memory:
-    const utf8Length = new Blob([key]).size;
-    const lengthStr = utf8Length.toString();
+    // deno-fmt-ignore
+    const speculativeUtf8Length = options.speculative !== true
+      ? estimateUtf8Length(key) : key.length <=    3
+      ?      3
+      :     10 <= key.length && key.length <=     33
+      ?     33
+      :    100 <= key.length && key.length <=    333
+      ?    333
+      :   1000 <= key.length && key.length <=   3333
+      ?   3333
+      :  10000 <= key.length && key.length <=  33333
+      ?  33333
+      : 100000 <= key.length && key.length <= 333333
+      ? 333333
+      : estimateUtf8Length(key);
+    const lengthStr = speculativeUtf8Length.toString();
     const { written } = textEncoder.encodeInto(lengthStr, buffer.subarray(1));
     if (bufferSize < lengthStr.length + 2) {
       return { written: written + 1, complete: false };
     }
     buffer[written + 1] = textLengthDelimiter;
-    const { written: contentWritten } = textEncoder.encodeInto(
+    const { written: contentWritten, read } = textEncoder.encodeInto(
       key,
       buffer.subarray(written + 2),
     );
-    if (bufferSize < written + 2 + utf8Length) {
+    if (read < key.length) {
       return { written: written + 2 + contentWritten, complete: false };
     }
-    return { written: written + 2 + utf8Length, complete: true };
+    if (contentWritten != speculativeUtf8Length) {
+      // When size speculation is wrong, we need to update the length.
+      textEncoder.encodeInto(contentWritten.toString(), buffer.subarray(1));
+    }
+    return { written: written + 2 + contentWritten, complete: true };
   } else if (key instanceof Uint8Array) {
     const lengthStr = key.length.toString();
     const { written } = textEncoder.encodeInto(lengthStr, buffer);
@@ -262,6 +297,25 @@ export function encodeKeyInto(
 }
 
 /**
+ * Options for size estimation functions, {@link estimateSize} and
+ * {@link estimateKeySize}.
+ */
+export interface SizeEstimationOptions {
+  /**
+   * The strategy to deal with slow-to-estimate values.
+   *
+   * The `"bestEffort"`, which is the default, will try to estimate the size
+   * of the value as * accurately as possible, but it may take longer time.
+   *
+   * The `"fastGuess"` will return a fast but inaccurate size estimation;
+   * it is guaranteed to be greater than or equal to the actual size,
+   * but it never be less than the  actual size, so that it is safe to
+   * allocate a buffer with the returned size.
+   */
+  accuracy?: "bestEffort" | "fastGuess";
+}
+
+/**
  * Estimates the byte size of the given value in Bencodex.
  *
  * Note that this function does not guarantee the exact size of the value
@@ -269,11 +323,15 @@ export function encodeKeyInto(
  * to the actual size.  In particular, this function does not take into
  * account the size of the dictionary with duplicate keys.
  * @param value A Bencodex value to estimate the size.
+ * @param options Options for size estimation.
  * @returns The estimated byte size of the given value.
  * @throws {TypeError} When the given value is not a valid Bencodex value.
  */
-export function estimateSize(value: Value): number {
-  if (isKey(value)) return estimateKeySize(value);
+export function estimateSize(
+  value: Value,
+  options: SizeEstimationOptions = {},
+): number {
+  if (isKey(value)) return estimateKeySize(value, options);
   if (value === null || typeof value == "boolean") return 1;
   if (typeof value === "bigint") {
     const asciiSize = value.toString().length;
@@ -282,7 +340,7 @@ export function estimateSize(value: Value): number {
   if (Array.isArray(value)) {
     let size = 2;
     for (const item of value) {
-      size += estimateSize(item);
+      size += estimateSize(item, options);
     }
     return size;
   }
@@ -296,8 +354,8 @@ export function estimateSize(value: Value): number {
         );
       }
       const [key, val] = pair;
-      size += estimateKeySize(key as unknown as Key);
-      size += estimateSize(val);
+      size += estimateKeySize(key as unknown as Key, options);
+      size += estimateSize(val, options);
     }
     return size;
   }
@@ -312,16 +370,17 @@ export function estimateSize(value: Value): number {
 /**
  * Estimates the byte size of the given key in Bencodex.
  * @param key A Bencodex dictionary key to estimate the size.
+ * @param options Options for size estimation.
  * @returns The estimated byte size of the given key.
  * @throws {TypeError} When the given key is neither a `string` nor
  *         a {@link Uint8Array}.
  */
-export function estimateKeySize(key: Key): number {
+export function estimateKeySize(
+  key: Key,
+  options: SizeEstimationOptions = {},
+): number {
   if (typeof key === "string") {
-    // NOTE: The below code looks tricky, but it is actually the quickest way
-    // to estimate the length of the UTF-8 encoded string, and it even does
-    // not allocate any memory:
-    const utf8Length = new Blob([key]).size;
+    const utf8Length = estimateUtf8Length(key, options);
     return 2 + utf8Length + utf8Length.toString().length;
   } else if (key instanceof Uint8Array) {
     return 1 + key.length + key.length.toString().length;
@@ -329,4 +388,15 @@ export function estimateKeySize(key: Key): number {
   throw new TypeError(
     `Invalid key type: ${typeof key}; expected string or Uint8Array`,
   );
+}
+
+function estimateUtf8Length(text: string, options: SizeEstimationOptions = {}) {
+  if (options.accuracy === "fastGuess" && text.length < 128) {
+    return 3 * text.length;
+  } else {
+    // NOTE: The below code looks tricky, but it is actually the quickest way
+    // to estimate the exact length of the UTF-8 encoded string, and it even
+    // does not allocate any memory:
+    return new Blob([text]).size;
+  }
 }

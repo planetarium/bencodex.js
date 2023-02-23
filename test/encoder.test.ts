@@ -411,6 +411,22 @@ Deno.test("encodeKeyInto()", async (t: Deno.TestContext) => {
     });
   }
 
+  for (const size of [1, 10, 100, 1000, 10000, 100000, 333334]) {
+    await t.step(`long string (${size}) with { speculative: true }`, () => {
+      const buffer = new Uint8Array(size + 16).fill(0x80);
+      const string = "a".repeat(size);
+      const endState = encodeKeyInto(string, buffer, { speculative: true });
+      assert(endState.complete);
+      const expected = new Uint8Array(size + 16);
+      const { written: expectedSize } = encodeKeyInto(string, expected);
+      assertStrictEquals(endState.written, expectedSize);
+      assertEquals(
+        buffer.subarray(0, endState.written),
+        expected.subarray(0, expectedSize),
+      );
+    });
+  }
+
   await t.step("Uint8Array with enough buffer", () => {
     const buffer = new Uint8Array(128).fill(0x80);
     const endState = encodeKeyInto(binaryKey, buffer);
