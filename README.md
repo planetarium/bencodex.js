@@ -26,6 +26,10 @@ implementation(s):
     tests besides spec test suite, and we've done the best to reach near-100%
     test coverage.
 
+ -  *Comprehensive docs*:  Every non-trivial library needs the three types of
+    docs: tutorials for getting stated, in-depth manuals for common scenarios,
+    and complete API references with concise examples.  It has all of them!
+
  -  *Reducing unnecessary memcpy*:  Instead of creating chunks of `Uint8Array`s
     and then allocating a large buffer to concatenate the whole data once again,
     it allocates only the necessary buffer only once.  It is not just
