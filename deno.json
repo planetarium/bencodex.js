@@ -2,7 +2,9 @@
   "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
   "imports": {
     "std/": "https://deno.land/std@0.177.0/",
-    "aitertools": "https://deno.land/x/aitertools@0.4.0/mod.ts"
+    "aitertools": "https://deno.land/x/aitertools@0.4.0/mod.ts",
+    "dnt": "https://deno.land/x/dnt@0.33.1/mod.ts",
+    "which_runtime": "https://deno.land/x/which_runtime@0.2.0/mod.ts"
   },
   "checkJs": true,
   "compilerOptions": {
@@ -15,11 +17,12 @@
     }
   },
   "tasks": {
-    "test": "deno test --allow-read=test/__snapshots__/,spec/testsuite --check",
-    "test-update": "deno task test --allow-write=test/__snapshots__/ -- --update",
+    "test": "deno test --allow-read=test/__snapshots__/,spec/testsuite --check test/",
+    "test-update": "deno task test --allow-write=test/__snapshots__/ -- --update test/",
     "dev": "deno task test --watch",
     "prepare-coverage": "deno task test --coverage=.cov-profile && deno coverage --exclude='test/.*[.]ts$' .cov-profile",
     "coverage": "deno task prepare-coverage && rm -r .cov-profile",
-    "lcov": "deno task prepare-coverage --lcov --output=.cov-profile/cov.lcov"
+    "lcov": "deno task prepare-coverage --lcov --output=.cov-profile/cov.lcov",
+    "dnt": "deno run --allow-all dnt.ts"
   }
 }

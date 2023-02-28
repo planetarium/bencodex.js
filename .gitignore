@@ -1,2 +1,3 @@
-.cov-profile
+.cov-profile/
 deno.lock
+npm/

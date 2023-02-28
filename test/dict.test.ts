@@ -8,6 +8,7 @@ import {
   assertThrows,
 } from "std/testing/asserts.ts";
 import { assertSnapshot } from "std/testing/snapshot.ts";
+import { isDeno } from "which_runtime";
 import { BencodexDictionary } from "../src/dict.ts";
 import { type Key, type Value } from "../src/types.ts";
 import { areUint8ArraysEqual } from "../src/utils.ts";
@@ -150,7 +151,9 @@ Deno.test("BencodexDictionary", async (t) => {
     assertEquals([...dict], [...dict.entries()]);
   });
 
-  await t.step("[Deno.customInspect]()", async (t) => {
-    await assertSnapshot(t, Deno.inspect(dict));
-  });
+  if (isDeno) {
+    await t.step("[Deno.customInspect]()", async (t) => {
+      await assertSnapshot(t, Deno.inspect(dict));
+    });
+  }
 });
