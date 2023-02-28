@@ -33,10 +33,10 @@ const textEncoder = new TextEncoder();
 export interface EncodingOptions {
   /**
    * How to handle duplicate keys in dictionaries.  If omitted, defaults to
-   * `"throw"`.  If `"throw"` is specified, a {@link RangeError} will be thrown
+   * `"error"`.  If `"error"` is specified, a {@link RangeError} will be thrown
    * when a dictionary has duplicate keys.
    */
-  onDuplicateKeys?: "throw" | "useFirst" | "useLast";
+  onDuplicateKeys?: "error" | "useFirst" | "useLast";
 }
 
 /**
@@ -186,7 +186,7 @@ export function encodeInto(
     for (const [key, val] of entries) {
       if (prevKey != null && areKeysEqual(key, prevKey)) {
         if (
-          options.onDuplicateKeys === "throw" || options.onDuplicateKeys == null
+          options.onDuplicateKeys === "error" || options.onDuplicateKeys == null
         ) {
           throw new RangeError("Invalid dictionary keys; duplicate keys found");
         } else if (

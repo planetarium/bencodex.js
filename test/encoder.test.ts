@@ -1,13 +1,11 @@
-import * as base64 from "std/encoding/base64.ts";
-import { dirname, fromFileUrl, join } from "std/path/mod.ts";
 import {
   assert,
   assertEquals,
+  assertExists,
   assertFalse,
   assertStrictEquals,
   assertThrows,
 } from "std/testing/asserts.ts";
-import { filter, map, toArray } from "aitertools";
 import {
   encode,
   encodeInto,
@@ -16,90 +14,27 @@ import {
   estimateSize,
 } from "../src/encoder.ts";
 import { type Dictionary, type Key, type Value } from "../src/types.ts";
+import { getTestSuiteLoader } from "./testsuite.ts";
 
 Deno.test("encode()", async (t: Deno.TestContext) => {
   assertEquals(encode(null), new Uint8Array([0x6e]));
   assertEquals(encode(false), new Uint8Array([0x66]));
   assertEquals(encode(true), new Uint8Array([0x74]));
 
-  const specDir = join(
-    dirname(dirname(fromFileUrl(import.meta.url))),
-    "spec",
-    "testsuite",
-  );
-  let specDirExists = false;
-  try {
-    const specDirStat = await Deno.stat(specDir);
-    specDirExists = specDirStat.isDirectory;
-  } catch (e) {
-    if (e instanceof Deno.errors.NotFound) specDirExists = false;
-    else throw e;
-  }
-
+  const loadTestSuite = await getTestSuiteLoader();
   await t.step({
     name: "spec test suite",
-    ignore: !specDirExists,
+    ignore: typeof loadTestSuite === "undefined",
     async fn(t: Deno.TestContext) {
-      let specFiles = await toArray(
-        map(
-          (e: Deno.DirEntry) => e.name,
-          filter(
-            (e: Deno.DirEntry) => !e.isDirectory && e.isFile,
-            Deno.readDir(specDir),
-          ),
-        ),
-      );
-      specFiles = specFiles.filter((f) =>
-        f.endsWith(".json") && specFiles.includes(f.replace(/\.json$/, ".dat"))
-      );
-      const textDecoder = new TextDecoder("utf-8");
-
-      for (const specFile of specFiles) {
-        await t.step(specFile, async () => {
-          const expectedBytes = await Deno.readFile(
-            join(specDir, specFile.replace(/\.json$/, ".dat")),
-          );
-          const tree = JSON.parse(
-            textDecoder.decode(await Deno.readFile(join(specDir, specFile))),
-          );
-          const value = parseTestSuiteValue(tree);
-          assertEquals(encode(value), expectedBytes);
+      assertExists(loadTestSuite);
+      for await (const spec of loadTestSuite()) {
+        await t.step(spec.valueFile, () => {
+          assertEquals(encode(spec.value), spec.encoding);
         });
       }
     },
   });
 });
-
-type TestSuiteKey =
-  | { type: "binary"; base64: string }
-  | { type: "text"; value: string };
-type TestSuiteTree =
-  | { type: "null" }
-  | { type: "boolean"; value: boolean }
-  | { type: "integer"; decimal: string }
-  | { type: "list"; values: TestSuiteTree[] }
-  | { type: "dictionary"; pairs: { key: TestSuiteKey; value: TestSuiteTree }[] }
-  | TestSuiteKey;
-
-function parseTestSuiteKey(key: TestSuiteKey): Key {
-  if (key.type === "text") return key.value;
-  return base64.decode(key.base64);
-}
-
-function parseTestSuiteValue(tree: TestSuiteTree): Value {
-  if (tree.type === "null") return null;
-  if (tree.type === "boolean") return tree.value;
-  if (tree.type === "integer") return BigInt(tree.decimal);
-  if (tree.type === "list") return tree.values.map(parseTestSuiteValue);
-  if (tree.type === "dictionary") {
-    const dict = new Map<Key, Value>();
-    for (const { key, value } of tree.pairs) {
-      dict.set(parseTestSuiteKey(key), parseTestSuiteValue(value));
-    }
-    return dict;
-  }
-  return parseTestSuiteKey(tree);
-}
 
 Deno.test("encodeInto()", async (t: Deno.TestContext) => {
   const atoms: [Value, number][] = [[null, 0x6e], [false, 0x66], [true, 0x74]];

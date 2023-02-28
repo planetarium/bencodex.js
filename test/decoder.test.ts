@@ -1,13 +1,71 @@
 import {
   assert,
   assertEquals,
+  assertExists,
   assertFalse,
   assertInstanceOf,
   assertStrictEquals,
+  assertThrows,
 } from "std/testing/asserts.ts";
-import { decodeKey, decodeValue } from "../src/decoder.ts";
+import {
+  decode,
+  decodeKey,
+  decodeValue,
+  DecodingError,
+} from "../src/decoder.ts";
 import { BencodexDictionary } from "../src/dict.ts";
 import { compareKeys, Key, Value } from "../src/types.ts";
+import { getTestSuiteLoader } from "./testsuite.ts";
+
+Deno.test("decode()", async (t: Deno.TestContext) => {
+  assertEquals(decode(new Uint8Array([0x6e])), null); // b"n"
+  assertEquals(decode(new Uint8Array([0x66])), false); // b"f"
+  assertEquals(decode(new Uint8Array([0x74])), true); // b"t"
+
+  await t.step("invalid data", () => {
+    const e = assertThrows(
+      () => decode(new Uint8Array([0x00])),
+      DecodingError,
+    );
+    assertStrictEquals(e.position, 0);
+    assertStrictEquals(e.kind, "unexpectedByte");
+  });
+
+  await t.step("trailing garbage bytes", () => {
+    const e = assertThrows(
+      () => decode(new Uint8Array([0x6e, 0x00])),
+      DecodingError,
+      "trailing garbage bytes",
+    );
+    assertStrictEquals(e.position, 1);
+    assertStrictEquals(e.kind, "unexpectedByte");
+  });
+
+  const loadTestSuite = await getTestSuiteLoader();
+
+  await t.step({
+    name: "spec test suite",
+    ignore: typeof loadTestSuite === "undefined",
+    async fn(t: Deno.TestContext) {
+      assertExists(loadTestSuite);
+      for await (const spec of loadTestSuite()) {
+        await t.step(spec.valueFile, () => {
+          assertEquals(decode(spec.encoding), spec.value);
+        });
+      }
+    },
+  });
+});
+
+Deno.test("DecodingError", () => {
+  const e = new DecodingError("An error message", 123, "unexpectedByte");
+  assertStrictEquals(
+    e.message,
+    "An error message (kind: unexpectedByte; position: 123)",
+  );
+  assertStrictEquals(e.position, 123);
+  assertStrictEquals(e.kind, "unexpectedByte");
+});
 
 Deno.test("decodeValue()", async (t: Deno.TestContext) => {
   await t.step("null", () => {

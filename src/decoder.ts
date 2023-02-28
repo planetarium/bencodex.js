@@ -1,3 +1,7 @@
+/**
+ * This module contains functions for decoding Bencodex values.
+ * @module
+ */
 import { compareKeys, Dictionary, Key, Value } from "./types.ts";
 import {
   binaryLengthDelimiter,
@@ -22,7 +26,7 @@ const textDecoder = new TextDecoder();
 /**
  * Options for decoding a Bencodex value.
  */
-export interface StatefulDecodingOptions {
+export interface DecodingOptions {
   /**
    * Whether to silently ignore or stop decoding and report an error when
    * dictionary keys are not ordered according to the Bencodex specification.
@@ -33,6 +37,9 @@ export interface StatefulDecodingOptions {
    * implementation of the `dictionaryConstructor`.  In case of
    * {@link BencodexDictionary} (default), the key appeared the latest will be
    * used.
+   *
+   * When this option is set to `"error"`, {@link decode} function throws
+   * an {@link DecodingErrorKind} when it encounters duplicate dictionary keys.
    */
   onInvalidKeyOrder?: "error" | "ignore";
   /**
@@ -41,6 +48,83 @@ export interface StatefulDecodingOptions {
    * to other implementations of {@link Dictionary} such as `Map<Key, Value>`.
    */
   dictionaryConstructor?: new (entries: Iterable<[Key, Value]>) => Dictionary;
+}
+
+const errorMessages: { [key in DecodingErrorKind]: string } = {
+  unexpectedEndOfInput: "Expected more bytes to be fed, but the input ended",
+  unexpectedByte: "An unexpected byte encountered",
+  invalidInteger: "An integer value contains non-ASCII digits",
+  noIntegerSuffix: `An integer does not end with 0x${
+    integerSuffix.toString(16)
+  }`,
+  noListSuffix: `A list does not end with 0x${listSuffix.toString(16)}`,
+  noDictionarySuffix: `A dictionary does not end with 0x${
+    dictionarySuffix.toString(16)
+  }`,
+  unorderedDictionaryKeys: "Dictionary keys are not properly ordered",
+  duplicateDictionaryKeys: "There are duplicate dictionary keys",
+  noBinaryLength: "A binary value does not contain a run length",
+  noBinaryDelimiter: `A binary value does not contain a delimiter 0x${
+    binaryLengthDelimiter.toString(16)
+  }`,
+  overRunBinaryLength:
+    "A specified binary length is greater than the remaining bytes",
+  noTextLength: "A text value does not contain a run length",
+  noTextDelimiter: `A text value does not contain a delimiter 0x${
+    textLengthDelimiter.toString(16)
+  }`,
+  overRunTextLength:
+    "A specified text length is greater than the remaining bytes",
+};
+
+/**
+ * Decodes a Bencodex value from the given buffer.
+ * @param buffer The buffer that contains encoded Bencodex bytes.
+ * @param options Options for decoding.
+ * @returns The decoded Bencodex value.
+ * @throws {@link DecodingError} When an error occurs while decoding.
+ */
+export function decode(
+  buffer: Uint8Array,
+  options: DecodingOptions = {},
+): Value {
+  const endState = decodeValue(buffer, options);
+  if (!endState.success) {
+    throw new DecodingError(
+      errorMessages[endState.error],
+      endState.read,
+      endState.error,
+    );
+  }
+  if (endState.read < buffer.length) {
+    throw new DecodingError(
+      "The input contains trailing garbage bytes after the value",
+      endState.read,
+      "unexpectedByte",
+    );
+  }
+  return endState.value;
+}
+
+/**
+ * An exception that is thrown when an error occurs while decoding a Bencodex.
+ */
+export class DecodingError extends RangeError {
+  /** The position of the error in the buffer. */
+  readonly position: number;
+
+  /** The code that represents the kind of error. */
+  readonly kind: DecodingErrorKind;
+
+  constructor(
+    message: string,
+    position: number,
+    kind: DecodingErrorKind,
+  ) {
+    super(`${message} (kind: ${kind}; position: ${position})`);
+    this.position = position;
+    this.kind = kind;
+  }
 }
 
 /**
@@ -69,8 +153,8 @@ export type DecodingState<T, E> =
 /**
  * Represents an error that can occur while decoding a Bencodex value.
  */
-export type DecodingError =
-  | KeyDecodingError
+export type DecodingErrorKind =
+  | KeyDecodingErrorKind
   /** The case where an unexpected byte is encountered. */
   | "unexpectedByte"
   /**
@@ -106,8 +190,8 @@ export type DecodingError =
  */
 export function decodeValue(
   buffer: Uint8Array,
-  options: StatefulDecodingOptions = {},
-): DecodingState<Value, DecodingError> {
+  options: DecodingOptions = {},
+): DecodingState<Value, DecodingErrorKind> {
   if (buffer.length < 1) {
     return { success: false, read: 0, error: "unexpectedEndOfInput" };
   }
@@ -189,7 +273,7 @@ export function decodeValue(
 /**
  * Represents an error that may occur during decoding Bencodex keys.
  */
-export type KeyDecodingError =
+export type KeyDecodingErrorKind =
   /** The case where more bytes are expected but no more bytes in the input. */
   | "unexpectedEndOfInput"
   /**
@@ -226,7 +310,7 @@ export type KeyDecodingError =
  */
 export function decodeKey(
   buffer: Uint8Array,
-): DecodingState<Key, KeyDecodingError> {
+): DecodingState<Key, KeyDecodingErrorKind> {
   let read = 0;
   if (buffer.length < 1) {
     return { success: false, read, error: "unexpectedEndOfInput" };

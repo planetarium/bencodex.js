@@ -18,7 +18,8 @@
     "test": "deno test --allow-read=test/__snapshots__/,spec/testsuite --check",
     "test-update": "deno task test --allow-write=test/__snapshots__/ -- --update",
     "dev": "deno task test --watch",
-    "coverage": "deno task test --coverage=.cov-profile && deno coverage .cov-profile && rm -rf .cov-profile",
-    "vscode-test": "deno task test --coverage=.cov-profile && deno coverage .cov-profile --lcov --output=.cov-profile/cov.lcov"
+    "prepare-coverage": "deno task test --coverage=.cov-profile && deno coverage --exclude='test/.*[.]ts$' .cov-profile",
+    "coverage": "deno task prepare-coverage && rm -r .cov-profile",
+    "lcov": "deno task prepare-coverage --lcov --output=.cov-profile/cov.lcov"
   }
 }

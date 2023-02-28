@@ -5,7 +5,7 @@
       "type": "deno",
       "command": "task",
       "args": [
-        "vscode-test"
+        "lcov"
       ],
       "problemMatcher": [
         "$deno"
