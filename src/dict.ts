@@ -12,7 +12,7 @@
 import {
   decode,
   encode,
-} from "https://deno.land/std@0.177.0/encoding/ascii85.ts";
+} from "https://deno.land/std@0.177.0/encoding/base64.ts";
 import { type Dictionary, type Key, type Value } from "./types.ts";
 import { areUint8ArraysEqual } from "./utils.ts";
 

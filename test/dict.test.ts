@@ -29,6 +29,19 @@ Deno.test("BencodexDictionary", async (t) => {
   ]);
 
   await t.step("new()", () => {
+    const textEncoder = new TextEncoder();
+    const spam = textEncoder.encode("spam");
+    const span = textEncoder.encode("span");
+    const d = new BencodexDictionary([
+      [spam, true],
+      [span, null],
+      ["단팥", 123n],
+    ]);
+    assertStrictEquals(d.size, 3);
+    assertStrictEquals(d.get(spam), true);
+    assertStrictEquals(d.get(span), null);
+    assertStrictEquals(d.get("단팥"), 123n);
+
     assertThrows(
       () => new BencodexDictionary(123 as unknown as Iterable<[Key, Value]>),
       TypeError,
