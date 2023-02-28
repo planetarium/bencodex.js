@@ -4,6 +4,7 @@ export const trueAtom = 0x74; // 't'
 const suffix = 0x65; // 'e'
 export const integerPrefix = 0x69; // 'i'
 export const integerSuffix = suffix;
+export const integerMinusSign = 0x2d; // '-'
 const lengthDelimiter = 0x3a; // ':'
 export const textPrefix = 0x75; // 'u'
 export const textLengthDelimiter = lengthDelimiter;
