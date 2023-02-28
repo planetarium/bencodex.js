@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "deno",
+      "command": "task",
+      "args": [
+        "vscode-test"
+      ],
+      "problemMatcher": [
+        "$deno"
+      ],
+      "label": "test",
+      "group": "test"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "request": "launch",
+      "name": "test",
+      "type": "node",
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": ["task", "test", "--inspect-wait"],
+      "attachSimplePort": 9229
+    }
+  ]
+}

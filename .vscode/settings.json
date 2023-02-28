@@ -4,11 +4,18 @@
   "deno.importMap": "./deno.json",
   "deno.lint": true,
   "deno.unstable": false,
+  "deno.testing.enable": true,
+  "deno.testing.args": [
+    "--allow-read=test/__snapshots__/,spec/testsuite",
+    "--check"
+  ],
   "files.insertFinalNewline": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
   "editor.formatOnSave": true,
+  "markiscodecoverage.searchCriteria": ".cov-profile/cov.lcov",
   "cSpell.words": [
     "bencodex",
+    "consts",
     "Deno",
     "façade",
     "memcpy",

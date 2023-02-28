@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "denoland.vscode-deno",
+    "hbenl.vscode-test-explorer",
+    "editorconfig.editorconfig",
+    "markis.code-coverage"
+  ]
+}
