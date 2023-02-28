@@ -1,7 +1,8 @@
+import { Buffer } from "std/node/buffer.ts";
 import * as disjukrBencodex from "npm:bencodex";
-import * as bencodexJs from "../src/encoder.ts";
+import * as bencodexJs from "../mod.ts";
 
-const data = new Map<
+const tree = new Map<
   string | Uint8Array,
   | Map<string | Uint8Array, string>
   | string
@@ -27,14 +28,29 @@ const data = new Map<
   [new Uint8Array(128), "garply"],
 ]);
 
+const encoding = bencodexJs.encode(tree);
+const encodingBuffer = Buffer.from(encoding);
+
 Deno.bench(
   "encoding (bencodex.js)",
   { group: "encoding", baseline: true },
-  () => void (bencodexJs.encode(data)),
+  () => void (bencodexJs.encode(tree)),
 );
 
 Deno.bench(
   "encoding (disjukr/bencodex)",
   { group: "encoding" },
-  () => disjukrBencodex.encode(data),
+  () => disjukrBencodex.encode(tree),
+);
+
+Deno.bench(
+  "decoding (bencodex.js)",
+  { group: "decoding", baseline: true },
+  () => void (bencodexJs.decode(encoding)),
+);
+
+Deno.bench(
+  "decoding (disjukr/bencodex)",
+  { group: "decoding" },
+  () => disjukrBencodex.decode(encodingBuffer),
 );

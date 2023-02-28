@@ -43,3 +43,32 @@ implementation(s):
 Distributed under LGPL 2.1 or later.
 
 [Bencodex]: https://bencodex.org/
+
+
+Benchmarks
+----------
+
+~~~~ console
+$ deno bench
+cpu: 12th Gen Intel(R) Core(TM) i5-1235U
+runtime: deno 1.30.3 (x86_64-unknown-linux-gnu)
+
+file:///home/dahlia/src/planetarium/bencodex.js/bench/comparison.bench.ts
+benchmark                        time (avg)             (min … max)       p75       p99      p995
+------------------------------------------------------------------- -----------------------------
+encoding (bencodex.js)        28.96 µs/iter   (17.24 µs … 10.43 ms)  22.25 µs  117.5 µs 221.98 µs
+encoding (disjukr/bencodex)   66.01 µs/iter    (39.36 µs … 4.38 ms)  55.58 µs  215.2 µs 313.14 µs
+
+summary
+  encoding (bencodex.js)
+   2.28x faster than encoding (disjukr/bencodex)
+
+decoding (bencodex.js)         7.73 µs/iter    (6.35 µs … 16.97 ms)   6.92 µs  17.39 µs  30.93 µs
+decoding (disjukr/bencodex)   45.76 µs/iter     (31.2 µs … 5.08 ms)  46.35 µs 135.29 µs 185.85 µs
+
+summary
+  decoding (bencodex.js)
+   5.92x faster than decoding (disjukr/bencodex)
+~~~~
+
+You can run the benchmarks by `deno bench`.
