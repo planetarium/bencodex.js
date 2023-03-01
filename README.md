@@ -52,6 +52,24 @@ Distributed under LGPL 2.1 or later.
 [Bencodex]: https://bencodex.org/
 
 
+Types
+-----
+
+| Bencodex   | TypeScript ([`Value`][Value]) |
+|------------|-------------------------------|
+| Null       | `null`                        |
+| Boolean    | `boolean`                     |
+| Integer    | `bigint` (not `number`)       |
+| Binary     | [`Uint8Array`][Uint8Array]    |
+| Text       | `string`                      |
+| List       | `Value[]`                     |
+| Dictionary | [`Dictionary`][Dictionary]    |
+
+[Value]: https://deno.land/x/bencodex/mod.ts?s=Value
+[Uint8Array]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+[Dictionary]: https://deno.land/x/bencodex/mod.ts?s=Dictionary
+
+
 Benchmarks
 ----------
 

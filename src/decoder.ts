@@ -79,6 +79,54 @@ const errorMessages: { [key in DecodingErrorKind]: string } = {
 
 /**
  * Decodes a Bencodex value from the given buffer.
+ *
+ * It assumes the entire contents of the buffer is a Bencodex value.  If you
+ * want to decode a Bencodex value from a part of a buffer, pass a sliced
+ * subarray of the buffer to this function.  If you don't know the byte length
+ * of the Bencodex value, use {@link decodeValue} instead.
+ *
+ * @example Decoding a Bencodex list
+ *
+ * ```typescript
+ * const encoded = new Uint8Array(
+ *   [0x6c, 0x74, 0x75, 0x34, 0x3a, 0x73, 0x70, 0x61, 0x6d, 0x65]
+ * );
+ * const decoded = decode(encoded);
+ * console.log(decoded);  // [true, "spam"]
+ * ```
+ *
+ * @example Decoding a Bencodex dictionary
+ *
+ * ```typescript
+ * const encoded = new Uint8Array([
+ *   0x64, // b"d"
+ *   0x34, 0x3a, 0x73, 0x70, 0x61, 0x6d, // b"4:spam"
+ *   0x74, // b"t"
+ *   0x75, 0x36, 0x3a, 0xeb, 0x8b, 0xa8, 0xed, 0x8c, 0xa5, // "u6:단팥"
+ *   0x69, 0x31, 0x32, 0x33, 0x65, // b"i123e"
+ *   0x65, // b"e"
+ * ]);
+ * const decoded = decode(encoded);
+ * console.log(decoded);
+ * // BencodexDictionary {
+ * //   "단팥": 123n,
+ * //   Uint8Array(4) [ 115, 112, 97, 109 ]: true
+ * // }
+ * ```
+ *
+ * @example Decoding a Bencodex dictionary into Map
+ *
+ * By default, {@link decode} constructs {@link BencodexDictionary} instances
+ * to represent decoded dictionaries.  You can change the type of dictionary
+ * by passing a custom {@link DecodingOptions.dictionaryConstructor} to
+ * the `options`:
+ *
+ * ```typescript
+ * const decoded = decode(encoded, { dictionaryConstructor: Map });
+ * console.log(decoded);
+ * // Map { Uint8Array(4) [ 115, 112, 97, 109 ] => true, "단팥" => 123n }
+ * ```
+ *
  * @param buffer The buffer that contains encoded Bencodex bytes.
  * @param options Options for decoding.
  * @returns The decoded Bencodex value.

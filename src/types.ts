@@ -9,24 +9,41 @@ import { areUint8ArraysEqual, compareUint8Arrays } from "./utils.ts";
 
 /**
  * Represents a value which can be used as a key in a Bencodex dictionary.
+ * It is either a string ("text" in Bencodex) or a `Unit8Array` instance
+ * ("binary" in Bencodex).
+ *
+ * Note that every {@link Key} is also a {@link Value} (not vice versa).
  */
 export type Key = string | Uint8Array;
 
 /**
- * Represents a value which can be encoded in Bencodex.
+ * Represents a value which can be encoded in Bencodex.  Each data type in
+ * Bencodex has its corresponding type in JavaScript:
+ *
+ * - `null` represents Bencodex's null
+ * - `boolean` represents Bencodex's Boolean
+ * - `bigint` represents Bencodex's integer
+ * - `string` represents Bencodex's text
+ * - `Uint8Array` represents Bencodex's binary
+ * - `Value[]` represents Bencodex's list
+ * - {@link Dictionary} represents Bencodex's dictionary (note that it is not
+ *   a concrete type, but an interface)
  */
 export type Value = null | boolean | bigint | Key | List | Dictionary;
 
 /**
- * Represents a Bencodex list.
+ * Represents a Bencodex list.  It basically is a read-only `Value[]`.
  */
 export type List = readonly Value[];
 
 /**
  * Represents a Bencodex dictionary.  It basically behaves like a read-only
  * `Map<Key, Value>`, but it is not necessarily a `Map` instance.
+ *
+ * @see {@link BencodexDictionary}
+ * @see {@link RecordView}
  */
-export interface Dictionary extends Iterable<[Key, Value]> {
+export interface Dictionary extends Iterable<readonly [Key, Value]> {
   /**
    * The number of key-value pairs in this dictionary.
    */
@@ -67,7 +84,7 @@ export interface Dictionary extends Iterable<[Key, Value]> {
    * @returns An iterable object which iterates over the key-value pairs in
    *          this dictionary.
    */
-  entries(): Iterable<[Key, Value]>;
+  entries(): Iterable<readonly [Key, Value]>;
 
   /**
    * Calls the given callback function for each key-value pair in this
@@ -88,9 +105,9 @@ export interface Dictionary extends Iterable<[Key, Value]> {
    * dictionary.  This method is equivalent to `Dictionary.entries()`.
    * @returns An iterator which iterates over the key-value pairs in this
    *          dictionary.
-   * @see Dictionary.entries
+   * @see {@link Dictionary.entries}
    */
-  [Symbol.iterator](): Iterator<[Key, Value]>;
+  [Symbol.iterator](): Iterator<readonly [Key, Value]>;
 }
 
 /**

@@ -32,11 +32,22 @@ const SHORT_BINARY_THRESHOLD = 32;
  *
  * Note that this implementation does not guarantee the stable order of entries;
  * it can vary depending on the platform and the version of this library.
+ *
+ * @example Constructing a dictionary
+ *
+ * ```typescript
+ * const dict = new BencodexDictionary([
+ *   ["foo", 123n],
+ *   ["bar", "baz"],
+ * ]);
+ * ```
  */
 export class BencodexDictionary implements Dictionary {
   readonly #stringKeys: Record<string, Value>;
   readonly #shortBinaryKeys: Record<string, Value>;
-  readonly #longerBinaryKeys: [Uint8Array, Value][];
+  readonly #longerBinaryKeys: (readonly [Uint8Array, Value])[];
+
+  /** {@inheritDoc Dictionary.size} */
   readonly size;
 
   /**
@@ -47,7 +58,7 @@ export class BencodexDictionary implements Dictionary {
    * @throws {TypeError} When the given `entries` is not an iterable object or
    *                     when it yields a non-pair value.
    */
-  constructor(entries: Iterable<[Key, Value]> = []) {
+  constructor(entries: Iterable<readonly [Key, Value]> = []) {
     if (typeof entries !== "object" || !(Symbol.iterator in entries)) {
       throw new TypeError(
         `Expected an iterable, but got a ${typeof entries}`,
@@ -100,6 +111,7 @@ export class BencodexDictionary implements Dictionary {
     }
   }
 
+  /** {@inheritDoc Dictionary.get} */
   get(key: Key): Value | undefined {
     if (typeof key === "string") return this.#stringKeys[key];
     else if (key.length < SHORT_BINARY_THRESHOLD) {
@@ -110,6 +122,7 @@ export class BencodexDictionary implements Dictionary {
     }
   }
 
+  /** {@inheritDoc Dictionary.has} */
   has(key: Key): boolean {
     if (typeof key === "string") return key in this.#stringKeys;
     else if (key.length < SHORT_BINARY_THRESHOLD) {
@@ -121,6 +134,7 @@ export class BencodexDictionary implements Dictionary {
     return false;
   }
 
+  /** {@inheritDoc Dictionary.keys} */
   *keys(): Iterable<Key> {
     for (const key in this.#stringKeys) {
       yield key;
@@ -133,6 +147,7 @@ export class BencodexDictionary implements Dictionary {
     }
   }
 
+  /** {@inheritDoc Dictionary.values} */
   *values(): Iterable<Value> {
     for (const value of Object.values(this.#stringKeys)) {
       yield value;
@@ -145,10 +160,12 @@ export class BencodexDictionary implements Dictionary {
     }
   }
 
-  entries(): Iterable<[Key, Value]> {
+  /** {@inheritDoc Dictionary.entries} */
+  entries(): Iterable<readonly [Key, Value]> {
     return this;
   }
 
+  /** {@inheritDoc Dictionary.forEach} */
   forEach(
     callback: (value: Value, key: Key, dictionary: Dictionary) => void,
     thisArg?: unknown,
@@ -158,7 +175,14 @@ export class BencodexDictionary implements Dictionary {
     }
   }
 
-  *[Symbol.iterator](): Iterator<[Key, Value]> {
+  /**
+   * Gets an iterator which iterates over the key-value pairs in this
+   * dictionary.  This method is equivalent to `Dictionary.entries()`.
+   * @returns An iterator which iterates over the key-value pairs in this
+   *          dictionary.
+   * @see {@link BencodexDictionary.entries}
+   */
+  *[Symbol.iterator](): Iterator<readonly [Key, Value]> {
     for (const [key, value] of Object.entries(this.#stringKeys)) {
       yield [key, value];
     }
@@ -210,7 +234,36 @@ export function isRecordValue(
 }
 
 /**
- * A view of a {@link RecordValue} that implements {@link Dictionary}.
+ * A view of a {@link RecordValue} that implements {@link Dictionary}.  It is
+ * a handy way to construct a {@link Dictionary} using JavaScript's object
+ * literal syntax.
+ *
+ * @example Constructing a simple dictionary
+ *
+ * ```typescript
+ * const dict = new RecordView({
+ *   foo: [1n, 2n, 3n],
+ *   bar: {
+ *     baz: "qux",
+ *     quux: true,
+ *   },
+ * });
+ * ```
+ *
+ * The above code is mostly equivalent to the following code:
+ *
+ * ```typescript
+ * const dict = new BencodexDictionary([
+ *   ["foo", [1n, 2n, 3n]],
+ *   [
+ *     "bar",
+ *     new BencodexDictionary([
+ *       ["baz", "qux"],
+ *       ["quux", true],
+ *     ]),
+ *   ],
+ * ])
+ * ```
  */
 export class RecordView implements Dictionary {
   #record: RecordValue;
@@ -248,6 +301,7 @@ export class RecordView implements Dictionary {
     this.keyEncoding = keyEncoding;
   }
 
+  /** {@inheritDoc Dictionary.size} */
   get size(): number {
     if (this.#size === undefined) {
       this.#size = Object.keys(this.#record).length;
@@ -263,6 +317,7 @@ export class RecordView implements Dictionary {
     return typeof key === "string" ? undefined : this.#textDecoder.decode(key);
   }
 
+  /** {@inheritDoc Dictionary.get} */
   get(key: Key): Value | undefined {
     const field = this.#getField(key);
     if (field == null) return undefined;
@@ -271,11 +326,13 @@ export class RecordView implements Dictionary {
     return value;
   }
 
+  /** {@inheritDoc Dictionary.has} */
   has(key: Key): boolean {
     const field = this.#getField(key);
     return field != null && field in this.#record;
   }
 
+  /** {@inheritDoc Dictionary.keys} */
   *keys(): Iterable<Key> {
     const keys = Object.keys(this.#record);
     const encoder = this.#textEncoder;
@@ -285,6 +342,7 @@ export class RecordView implements Dictionary {
     }
   }
 
+  /** {@inheritDoc Dictionary.values} */
   *values(): Iterable<Value> {
     for (const value of Object.values(this.#record)) {
       yield isRecordValue(value)
@@ -293,10 +351,12 @@ export class RecordView implements Dictionary {
     }
   }
 
+  /** {@inheritDoc Dictionary.entries} */
   entries(): Iterable<[Key, Value]> {
     return this;
   }
 
+  /** {@inheritDoc Dictionary.forEach} */
   forEach(
     callback: (value: Value, key: Key, dictionary: Dictionary) => void,
     thisArg?: unknown,
@@ -306,6 +366,13 @@ export class RecordView implements Dictionary {
     }
   }
 
+  /**
+   * Gets an iterator which iterates over the key-value pairs in this
+   * dictionary.  This method is equivalent to `Dictionary.entries()`.
+   * @returns An iterator which iterates over the key-value pairs in this
+   *          dictionary.
+   * @see {@link RecordView.entries}
+   */
   *[Symbol.iterator](): Iterator<[Key, Value]> {
     const entries = Object.entries(this.#record);
     const encoder = this.#textEncoder;

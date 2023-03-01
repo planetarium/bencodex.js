@@ -63,6 +63,20 @@ export interface EncodingState {
 
 /**
  * Encodes a Bencodex value and returns the encoded bytes.
+ *
+ * This function allocates a new buffer and returns the encoded bytes.  If you
+ * want to encode a value into a pre-allocated buffer, use {@link encodeInto}
+ * instead.
+ *
+ * @example Encoding a Bencodex list
+ *
+ * ```typescript
+ * const encoded = encode([true, "spam"]);
+ * console.log(encoded);
+ * // Uint8Array(10) [ 0x6c, 0x74, 0x75, 0x34, 0x3a, 0x73, 0x70,
+ * //                  0x61, 0x6d, 0x65 ]
+ * ```
+ *
  * @param value A Bencodex value to encode.
  * @param options Encoding options.
  * @returns The encoded bytes.
@@ -100,6 +114,22 @@ export interface NonAllocEncodingOptions extends EncodingOptions {
 
 /**
  * Encodes a value into the given buffer.
+ *
+ * This does not allocate a new buffer, and fills the given buffer with the
+ * encoded value from the beginning.  If you want to fill the buffer from
+ * somewhere else, pass a sliced subarray of the buffer to this function.
+ *
+ * @example Encoding a Bencodex list into a pre-allocated buffer
+ *
+ * ```typescript
+ * const buffer = new Uint8Array(100);
+ * const state = encodeInto(["foo", 123n], buffer);
+ * if (!state.complete) console.error("Failed to encode the value");
+ * else console.log(buffer.subarray(0, state.written));
+ * // Uint8Array(13) [ 0x6c, 0x75, 0x33, 0x3a, 0x66, 0x6f, 0x6f, 0x69, 0x31,
+ * //                  0x32, 0x33, 0x65, 0x65 ]
+ * ```
+ *
  * @param value A value to encode.
  * @param buffer A buffer that the encoded value will be written into.  This
  *               buffer will be modified.
@@ -368,7 +398,8 @@ export function estimateSize(
 }
 
 /**
- * Estimates the byte size of the given key in Bencodex.
+ * Estimates the byte size of the given key in Bencodex.  It enables you to
+ * determine the size of a Bencodex data without actually encoding it.
  * @param key A Bencodex dictionary key to estimate the size.
  * @param options Options for size estimation.
  * @returns The estimated byte size of the given key.
