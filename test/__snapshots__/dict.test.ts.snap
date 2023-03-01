@@ -15,3 +15,7 @@ snapshot[`BencodexDictionary > [Deno.customInspect]() 1`] = `
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ]: "qux" }'
 `;
+
+snapshot[`RecordView > [Deno.customInspect]() 1`] = `'RecordView { { foo: "bar", baz: "qux", "단팥": { spam: "span", eggs: "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 2`] = `'RecordView { { foo: "bar", baz: "qux", "단팥": { spam: "span", eggs: "ham" } }'`;

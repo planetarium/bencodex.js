@@ -25,4 +25,9 @@ export {
   type Key,
   type Value,
 } from "./src/types.ts";
-export { BencodexDictionary } from "./src/dict.ts";
+export {
+  BencodexDictionary,
+  isRecordValue,
+  type RecordValue,
+  RecordView,
+} from "./src/dict.ts";

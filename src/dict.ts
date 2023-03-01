@@ -13,7 +13,12 @@ import {
   decode,
   encode,
 } from "https://deno.land/std@0.177.0/encoding/base64.ts";
-import { type Dictionary, type Key, type Value } from "./types.ts";
+import {
+  type Dictionary,
+  isDictionary,
+  type Key,
+  type Value,
+} from "./types.ts";
 import { areUint8ArraysEqual } from "./utils.ts";
 
 const SHORT_BINARY_THRESHOLD = 32;
@@ -34,6 +39,14 @@ export class BencodexDictionary implements Dictionary {
   readonly #longerBinaryKeys: [Uint8Array, Value][];
   readonly size;
 
+  /**
+   * Creates a new {@link BencodexDictionary} instance.
+   * @param entries An iterable object which yields key-value pairs to be
+   *                inserted into the new dictionary.  If omitted, an empty
+   *                dictionary is created.
+   * @throws {TypeError} When the given `entries` is not an iterable object or
+   *                     when it yields a non-pair value.
+   */
   constructor(entries: Iterable<[Key, Value]> = []) {
     if (typeof entries !== "object" || !(Symbol.iterator in entries)) {
       throw new TypeError(
@@ -167,5 +180,157 @@ export class BencodexDictionary implements Dictionary {
     }
     s += " }";
     return s;
+  }
+}
+
+/**
+ * A record object that represents a Bencodex dictionary.
+ *
+ * Note that its values can be either {@link Value} or {@link RecordValue}
+ * recursively.
+ */
+export interface RecordValue {
+  [key: string]: Value | RecordValue;
+}
+
+/**
+ * A type guard predicate that checks if the given value is
+ * a {@link RecordValue}.
+ * @param value The value to check.
+ * @returns `true` iff the given value is a {@link RecordValue}.
+ */
+export function isRecordValue(
+  value: Value | RecordValue,
+): value is RecordValue {
+  return typeof value === "object" &&
+    value != null &&
+    !Array.isArray(value) &&
+    !(value instanceof Uint8Array) &&
+    !isDictionary(value);
+}
+
+/**
+ * A view of a {@link RecordValue} that implements {@link Dictionary}.
+ */
+export class RecordView implements Dictionary {
+  #record: RecordValue;
+  #size: number | undefined;
+  #textEncoder: TextEncoder | undefined;
+  #textDecoder: TextDecoder | undefined;
+
+  /**
+   * How the keys are encoded.  If it is `"text"`, the keys are encoded as
+   * Bencodex texts.  If it is `"utf8"`, the keys are encoded as Bencodex binary
+   * values with UTF-8 encoding.
+   */
+  readonly keyEncoding: "text" | "utf8";
+
+  /**
+   * Creates a new {@link RecordView} instance.
+   * @param record The record object to view.
+   * @param keyEncoding How the keys are encoded.  If it is `"text"`, the keys
+   *                    are encoded as Bencodex texts.  If it is `"utf8"`, the
+   *                    keys are encoded as Bencodex binary values with UTF-8
+   *                    encoding.
+   * @throws {TypeError} When the given record is not an object or is null.
+   */
+  constructor(record: RecordValue, keyEncoding: "text" | "utf8") {
+    if (typeof record !== "object") {
+      throw new TypeError(
+        `Expected an object, but got a ${typeof record}`,
+      );
+    } else if (record == null) {
+      throw new TypeError("Expected an object, but got null");
+    }
+    this.#record = record;
+    this.#textEncoder = keyEncoding == "text" ? undefined : new TextEncoder();
+    this.#textDecoder = keyEncoding == "text" ? undefined : new TextDecoder();
+    this.keyEncoding = keyEncoding;
+  }
+
+  get size(): number {
+    if (this.#size === undefined) {
+      this.#size = Object.keys(this.#record).length;
+    }
+    return this.#size;
+  }
+
+  #getField(key: Key): string | undefined {
+    if (this.#textDecoder == null) {
+      return typeof key === "string" ? key : undefined;
+    }
+
+    return typeof key === "string" ? undefined : this.#textDecoder.decode(key);
+  }
+
+  get(key: Key): Value | undefined {
+    const field = this.#getField(key);
+    if (field == null) return undefined;
+    const value = this.#record[field];
+    if (isRecordValue(value)) return new RecordView(value, this.keyEncoding);
+    return value;
+  }
+
+  has(key: Key): boolean {
+    const field = this.#getField(key);
+    return field != null && field in this.#record;
+  }
+
+  *keys(): Iterable<Key> {
+    const keys = Object.keys(this.#record);
+    const encoder = this.#textEncoder;
+    if (encoder == null) yield* keys;
+    else {
+      for (const key of keys) yield encoder.encode(key);
+    }
+  }
+
+  *values(): Iterable<Value> {
+    for (const value of Object.values(this.#record)) {
+      yield isRecordValue(value)
+        ? new RecordView(value, this.keyEncoding)
+        : value;
+    }
+  }
+
+  entries(): Iterable<[Key, Value]> {
+    return this;
+  }
+
+  forEach(
+    callback: (value: Value, key: Key, dictionary: Dictionary) => void,
+    thisArg?: unknown,
+  ): void {
+    for (const [key, value] of this) {
+      callback.call(thisArg, value, key, this);
+    }
+  }
+
+  *[Symbol.iterator](): Iterator<[Key, Value]> {
+    const entries = Object.entries(this.#record);
+    const encoder = this.#textEncoder;
+    if (encoder == null) {
+      for (const [key, value] of entries) {
+        yield [
+          key,
+          isRecordValue(value)
+            ? new RecordView(value, this.keyEncoding)
+            : value,
+        ];
+      }
+    } else {
+      for (const [key, value] of entries) {
+        yield [
+          encoder.encode(key),
+          isRecordValue(value)
+            ? new RecordView(value, this.keyEncoding)
+            : value,
+        ];
+      }
+    }
+  }
+
+  [Symbol.for("Deno.customInspect")](inspect: (_: unknown) => string) {
+    return `RecordView { ${inspect(this.#record)}`;
   }
 }
