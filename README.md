@@ -3,6 +3,8 @@
 Bencodex.js
 ===========
 
+[![deno.land/x/bencodex status][]][deno.land/x/bencodex]
+[![npm status][]][@planetarium/bencodex]
 [![CI status][]][GitHub Actions]
 [![Coverage status][]][Coveralls]
 
@@ -45,11 +47,66 @@ implementation(s):
 
 Distributed under LGPL 2.1 or later.
 
+[deno.land/x/bencodex status]: https://img.shields.io/github/v/tag/planetarium/bencodex.js?label=deno.land%2Fx%2Fbencodex
+[deno.land/x/bencodex]: https://deno.land/x/bencodex
+[npm status]: https://img.shields.io/npm/v/@planetarium/bencodex?label=npm%20i%20%40planetarium%2Fbencodex
+[@planetarium/bencodex]: https://www.npmjs.com/package/@planetarium/bencodex
 [CI status]: https://github.com/planetarium/bencodex.js/actions/workflows/main.yaml/badge.svg?branch=main
 [GitHub Actions]: https://github.com/planetarium/bencodex.js/actions/workflows/main.yaml
 [Coverage status]: https://coveralls.io/repos/github/planetarium/bencodex.js/badge.svg
 [Coveralls]: https://coveralls.io/github/planetarium/bencodex.js
 [Bencodex]: https://bencodex.org/
+
+
+Getting started
+---------------
+
+See also the [complete API references] as well.
+
+[complete API references]: https://deno.land/x/bencodex/mod.ts
+
+
+### Deno
+
+It's available on [deno.land/x/bencodex]:
+
+~~~~ typescript
+import { decode, encode } from "https://deno.land/x/bencodex/mod.ts";
+
+const value = new Map([
+  ["foo", true],
+  ["bar", null],
+  ["baz", new Uint8Array([0x73, 0x70, 0x61, 0x6d])],
+  [
+    new Uint8Array([0x68, 0x65, 0x6c, 0x6c, 0x6f]),
+    [
+      123456n,
+      "Unicode string",
+      false,
+    ],
+  ],
+]);
+const encoded = encode(value);
+const decoded = decode(encoded);
+~~~~
+
+
+### Node.js
+
+Add [@planetarium/bencodex] to your dependencies using your favorite package
+manager:
+
+~~~~ console
+npm install @planetarium/bencodex
+~~~~
+
+The API usage is equivalent to the example above for Deno, except that you
+need to import things from `"@planetarium/bencodex"` instead of the
+*deno.land/x/* URL:
+
+~~~~ typescript
+import { decode, encode } from "@planetarium/bencodex";
+~~~~
 
 
 Types
