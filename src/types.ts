@@ -94,6 +94,25 @@ export interface Dictionary extends Iterable<[Key, Value]> {
 }
 
 /**
+ * Checks if the given value is a Bencodex dictionary.
+ * @param value The value to check.
+ * @returns `true` iff the given value is a Bencodex dictionary.
+ */
+export function isDictionary(value: unknown): value is Dictionary {
+  return (
+    typeof value === "object" && value != null &&
+    "size" in value && typeof value.size === "number" &&
+    "get" in value && typeof value.get === "function" &&
+    "has" in value && typeof value.has === "function" &&
+    "keys" in value && typeof value.keys === "function" &&
+    "values" in value && typeof value.values === "function" &&
+    "entries" in value && typeof value.entries === "function" &&
+    "forEach" in value && typeof value.forEach === "function" &&
+    Symbol.iterator in value && typeof value[Symbol.iterator] === "function"
+  );
+}
+
+/**
  * Checks if the given value can be used as a key in a Bencodex dictionary.
  * @param value The value to check.
  * @returns `true` iff the given value can be used as a key in a Bencodex

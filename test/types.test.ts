@@ -4,7 +4,132 @@ import {
   assertStrictEquals,
   assertThrows,
 } from "std/testing/asserts.ts";
-import { areKeysEqual, compareKeys, isKey, Key } from "../src/types.ts";
+import { BencodexDictionary } from "../src/dict.ts";
+import {
+  areKeysEqual,
+  compareKeys,
+  isDictionary,
+  isKey,
+  Key,
+  Value,
+} from "../src/types.ts";
+
+Deno.test("isDictionary()", () => {
+  assertFalse(isDictionary("foo"));
+  assertFalse(isDictionary(null));
+  assertFalse(isDictionary({ size: "non-number" }));
+  assertFalse(isDictionary({ size: 0 }));
+  assertFalse(isDictionary({ size: 0, get: "non-function" }));
+  assertFalse(isDictionary({ size: 0, get: () => undefined }));
+  assertFalse(
+    isDictionary({ size: 0, get: () => undefined, has: "non-function" }),
+  );
+  assertFalse(
+    isDictionary({ size: 0, get: () => undefined, has: () => false }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: "non-function",
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: "non-function",
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: () => [],
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: () => [],
+      entries: "non-function",
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: () => [],
+      entries: () => [],
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: () => [],
+      entries: () => [],
+      forEach: "non-function",
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: () => [],
+      entries: () => [],
+      forEach: () => undefined,
+    }),
+  );
+  assertFalse(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: () => [],
+      entries: () => [],
+      forEach: () => undefined,
+      [Symbol.iterator]: "non-function",
+    }),
+  );
+  assert(
+    isDictionary({
+      size: 0,
+      get: () => undefined,
+      has: () => false,
+      keys: () => [],
+      values: () => [],
+      entries: () => [],
+      forEach: () => undefined,
+      [Symbol.iterator]: () => [],
+    }),
+  );
+  assert(isDictionary(new Map<Key, Value>()));
+  assert(isDictionary(new BencodexDictionary()));
+});
 
 Deno.test("isKey()", () => {
   assert(isKey("foo"));

@@ -20,6 +20,7 @@ export {
 export {
   areKeysEqual,
   type Dictionary,
+  isDictionary,
   isKey,
   type Key,
   type Value,
