@@ -3,6 +3,8 @@
 Bencodex.js
 ===========
 
+[![GitHub Actions][GitHub Actions badge]][GitHub Actions]
+
 This library is an alternative take on implementing [Bencodex] in JavaScript.
 
 It focused to address the following problems from the existing JavaScript
@@ -42,6 +44,8 @@ implementation(s):
 
 Distributed under LGPL 2.1 or later.
 
+[GitHub Actions badge]: https://github.com/planetarium/bencodex.js/actions/workflows/main.yaml/badge.svg?branch=main
+[GitHub Actions]: https://github.com/planetarium/bencodex.js/actions/workflows/main.yaml
 [Bencodex]: https://bencodex.org/
 
 
