@@ -47,7 +47,7 @@ jobs:
           deno task dnt 0.0.0
         fi
         pushd npm/
-        npm pack
+        npm pack --dry-run
         if [[ "$GITHUB_REF_TYPE" = "tag" ]]; then
           npm publish --access=public
         else
