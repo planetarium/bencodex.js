@@ -460,7 +460,14 @@ Deno.test("estimateSize()", async (t: Deno.TestContext) => {
 Deno.test("estimateKeySize()", async (t: Deno.TestContext) => {
   await t.step("string", () => {
     assertStrictEquals(estimateKeySize("hello"), 8);
+    assertStrictEquals(estimateKeySize("hello", { accuracy: "fastGuess" }), 19);
     assertStrictEquals(estimateKeySize("단팥"), 9);
+    assertStrictEquals(estimateKeySize("단팥", { accuracy: "fastGuess" }), 9);
+    assertStrictEquals(estimateKeySize(" ".repeat(128)), 133);
+    assertStrictEquals(
+      estimateKeySize(" ".repeat(128), { accuracy: "fastGuess" }),
+      133,
+    );
   });
 
   await t.step("Uint8Array", () => {
