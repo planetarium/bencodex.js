@@ -18,6 +18,7 @@ jobs:
         path: ${{ env.DENO_DIR }}
         key: deno-${{ runner.os }}
     - run: deno task lcov
+    - run: deno fmt --check
     - uses: coverallsapp/github-action@v1
       with:
         github-token: ${{ github.token }}
