@@ -4,6 +4,7 @@ import {
   assertArrayIncludes,
   assertEquals,
   assertFalse,
+  assertInstanceOf,
   assertStrictEquals,
   assertThrows,
 } from "std/testing/asserts.ts";
@@ -164,7 +165,24 @@ Deno.test("BencodexDictionary", async (t) => {
 
   if (isDeno) {
     await t.step("[Deno.customInspect]()", async (t) => {
-      await assertSnapshot(t, Deno.inspect(dict));
+      const nodeInspect = Symbol.for("nodejs.util.inspect.custom");
+      assert(nodeInspect in dict);
+      assertInstanceOf(dict[nodeInspect], Function);
+      for (const compact of [true, false]) {
+        for (const depth of [0, 1, 2, 3]) {
+          for (const sorted of [true, false]) {
+            for (const trailingComma of [true, false]) {
+              const options = { compact, depth, sorted, trailingComma };
+              await assertSnapshot(t, Deno.inspect(dict, options));
+              const nodeOptions = { ...options, trailingComma: false };
+              assertEquals(
+                dict[nodeInspect](depth, options, Deno.inspect),
+                Deno.inspect(dict, nodeOptions),
+              );
+            }
+          }
+        }
+      }
     });
   }
 });
@@ -343,8 +361,36 @@ Deno.test("RecordView", async (t: Deno.TestContext) => {
 
   if (isDeno) {
     await t.step("[Deno.customInspect]()", async (t) => {
-      await assertSnapshot(t, Deno.inspect(textView));
-      await assertSnapshot(t, Deno.inspect(utf8View));
+      const nodeInspect = Symbol.for("nodejs.util.inspect.custom");
+      assert(nodeInspect in textView);
+      assertInstanceOf(textView[nodeInspect], Function);
+      assert(nodeInspect in utf8View);
+      assertInstanceOf(utf8View[nodeInspect], Function);
+      for (const compact of [true, false]) {
+        for (const depth of [0, 1, 2, 3]) {
+          for (const sorted of [true, false]) {
+            for (const trailingComma of [true, false]) {
+              const options = {
+                compact,
+                depth,
+                sorted,
+                trailingComma,
+              };
+              await assertSnapshot(t, Deno.inspect(textView, options));
+              await assertSnapshot(t, Deno.inspect(utf8View, options));
+              const nodeOptions = { ...options, trailingComma: false };
+              assertEquals(
+                textView[nodeInspect](depth, options, Deno.inspect),
+                Deno.inspect(textView, nodeOptions),
+              );
+              assertEquals(
+                utf8View[nodeInspect](depth, options, Deno.inspect),
+                Deno.inspect(utf8View, nodeOptions),
+              );
+            }
+          }
+        }
+      }
     });
   }
 });

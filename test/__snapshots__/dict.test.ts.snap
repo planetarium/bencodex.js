@@ -1,21 +1,1925 @@
 export const snapshot = {};
 
-snapshot[`BencodexDictionary > [Deno.customInspect]() 1`] = `
-'BencodexDictionary { "foo": "dup", "baz": "qux", Uint8Array(3) [ 1, 2, 3 ]: "dup", Uint8Array(3) [ 4, 5, 6 ]: "qux", Uint8Array(64) [
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-]: "dup", Uint8Array(64) [
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-]: "qux" }'
+snapshot[`BencodexDictionary > [Deno.customInspect]() 1`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 2`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 3`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 4`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 5`] = `'BencodexDictionary(6) { [Uint8Array] => "dup", [Uint8Array] => "qux", [Uint8Array] => "dup", [Uint8Array] => "qux", "baz" => "qux", "foo" => "dup" }'`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 6`] = `'BencodexDictionary(6) { [Uint8Array] => "dup", [Uint8Array] => "qux", [Uint8Array] => "dup", [Uint8Array] => "qux", "baz" => "qux", "foo" => "dup" }'`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 7`] = `'BencodexDictionary(6) { "foo" => "dup", "baz" => "qux", [Uint8Array] => "dup", [Uint8Array] => "qux", [Uint8Array] => "dup", [Uint8Array] => "qux" }'`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 8`] = `'BencodexDictionary(6) { "foo" => "dup", "baz" => "qux", [Uint8Array] => "dup", [Uint8Array] => "qux", [Uint8Array] => "dup", [Uint8Array] => "qux" }'`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 9`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  ] => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup",
+}'
 `;
 
-snapshot[`RecordView > [Deno.customInspect]() 1`] = `'RecordView { { foo: "bar", baz: "qux", "단팥": { spam: "span", eggs: "ham" } }'`;
+snapshot[`BencodexDictionary > [Deno.customInspect]() 10`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  ] => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup"
+}'
+`;
 
-snapshot[`RecordView > [Deno.customInspect]() 2`] = `'RecordView { { foo: "bar", baz: "qux", "단팥": { spam: "span", eggs: "ham" } }'`;
+snapshot[`BencodexDictionary > [Deno.customInspect]() 11`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  ] => "qux",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 12`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  ] => "qux"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 13`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  ] => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 14`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  ] => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 15`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  ] => "qux",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 16`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [ 1, 2, 3 ] => "dup",
+  Uint8Array(3) [ 4, 5, 6 ] => "qux",
+  Uint8Array(64) [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  ] => "dup",
+  Uint8Array(64) [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  ] => "qux"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 17`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 18`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 19`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 20`] = `"[BencodexDictionary(6)]"`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 21`] = `
+'BencodexDictionary(6) {
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux",
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux",
+  "baz" => "qux",
+  "foo" => "dup",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 22`] = `
+'BencodexDictionary(6) {
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux",
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux",
+  "baz" => "qux",
+  "foo" => "dup"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 23`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux",
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 24`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux",
+  [Uint8Array] => "dup",
+  [Uint8Array] => "qux"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 25`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+  ] => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3,
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6,
+  ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 26`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ] => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6
+  ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 27`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3,
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6,
+  ] => "qux",
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+  ] => "qux",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 28`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6
+  ] => "qux",
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ] => "qux"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 29`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+  ] => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3,
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6,
+  ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 30`] = `
+'BencodexDictionary(6) {
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ] => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6
+  ] => "qux",
+  "baz" => "qux",
+  "foo" => "dup"
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 31`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3,
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6,
+  ] => "qux",
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+  ] => "qux",
+}'
+`;
+
+snapshot[`BencodexDictionary > [Deno.customInspect]() 32`] = `
+'BencodexDictionary(6) {
+  "foo" => "dup",
+  "baz" => "qux",
+  Uint8Array(3) [
+    1,
+    2,
+    3
+  ] => "dup",
+  Uint8Array(3) [
+    4,
+    5,
+    6
+  ] => "qux",
+  Uint8Array(64) [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ] => "dup",
+  Uint8Array(64) [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ] => "qux"
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 1`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 2`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 3`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 4`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 5`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 6`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 7`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 8`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 9`] = `'BencodexDictionary(3) { "baz" => "qux", "foo" => "bar", "단팥" => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 10`] = `'BencodexDictionary(3) { [Uint8Array] => "qux", [Uint8Array] => "bar", [Uint8Array] => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 11`] = `'BencodexDictionary(3) { "baz" => "qux", "foo" => "bar", "단팥" => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 12`] = `'BencodexDictionary(3) { [Uint8Array] => "qux", [Uint8Array] => "bar", [Uint8Array] => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 13`] = `'BencodexDictionary(3) { "foo" => "bar", "baz" => "qux", "단팥" => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 14`] = `'BencodexDictionary(3) { [Uint8Array] => "bar", [Uint8Array] => "qux", [Uint8Array] => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 15`] = `'BencodexDictionary(3) { "foo" => "bar", "baz" => "qux", "단팥" => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 16`] = `'BencodexDictionary(3) { [Uint8Array] => "bar", [Uint8Array] => "qux", [Uint8Array] => [BencodexDictionary(2)] }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 17`] = `'BencodexDictionary(3) { "baz" => "qux", "foo" => "bar", "단팥" => BencodexDictionary(2) { "eggs" => "ham", "spam" => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 18`] = `'BencodexDictionary(3) { Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { [Uint8Array] => "ham", [Uint8Array] => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 19`] = `'BencodexDictionary(3) { "baz" => "qux", "foo" => "bar", "단팥" => BencodexDictionary(2) { "eggs" => "ham", "spam" => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 20`] = `'BencodexDictionary(3) { Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { [Uint8Array] => "ham", [Uint8Array] => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 21`] = `'BencodexDictionary(3) { "foo" => "bar", "baz" => "qux", "단팥" => BencodexDictionary(2) { "spam" => "span", "eggs" => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 22`] = `'BencodexDictionary(3) { Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { [Uint8Array] => "span", [Uint8Array] => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 23`] = `'BencodexDictionary(3) { "foo" => "bar", "baz" => "qux", "단팥" => BencodexDictionary(2) { "spam" => "span", "eggs" => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 24`] = `'BencodexDictionary(3) { Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { [Uint8Array] => "span", [Uint8Array] => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 25`] = `'BencodexDictionary(3) { "baz" => "qux", "foo" => "bar", "단팥" => BencodexDictionary(2) { "eggs" => "ham", "spam" => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 26`] = `'BencodexDictionary(3) { Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { Uint8Array(4) [ 101, 103, 103, 115 ] => "ham", Uint8Array(4) [ 115, 112, 97, 109 ] => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 27`] = `'BencodexDictionary(3) { "baz" => "qux", "foo" => "bar", "단팥" => BencodexDictionary(2) { "eggs" => "ham", "spam" => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 28`] = `'BencodexDictionary(3) { Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { Uint8Array(4) [ 101, 103, 103, 115 ] => "ham", Uint8Array(4) [ 115, 112, 97, 109 ] => "span" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 29`] = `'BencodexDictionary(3) { "foo" => "bar", "baz" => "qux", "단팥" => BencodexDictionary(2) { "spam" => "span", "eggs" => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 30`] = `'BencodexDictionary(3) { Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { Uint8Array(4) [ 115, 112, 97, 109 ] => "span", Uint8Array(4) [ 101, 103, 103, 115 ] => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 31`] = `'BencodexDictionary(3) { "foo" => "bar", "baz" => "qux", "단팥" => BencodexDictionary(2) { "spam" => "span", "eggs" => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 32`] = `'BencodexDictionary(3) { Uint8Array(3) [ 102, 111, 111 ] => "bar", Uint8Array(3) [ 98, 97, 122 ] => "qux", Uint8Array(6) [ 235, 139, 168, 237, 140, 165 ] => BencodexDictionary(2) { Uint8Array(4) [ 115, 112, 97, 109 ] => "span", Uint8Array(4) [ 101, 103, 103, 115 ] => "ham" } }'`;
+
+snapshot[`RecordView > [Deno.customInspect]() 33`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 34`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 35`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 36`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 37`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 38`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 39`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 40`] = `"[BencodexDictionary(3)]"`;
+
+snapshot[`RecordView > [Deno.customInspect]() 41`] = `
+'BencodexDictionary(3) {
+  "baz" => "qux",
+  "foo" => "bar",
+  "단팥" => [BencodexDictionary(2)],
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 42`] = `
+'BencodexDictionary(3) {
+  [Uint8Array] => "qux",
+  [Uint8Array] => "bar",
+  [Uint8Array] => [BencodexDictionary(2)],
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 43`] = `
+'BencodexDictionary(3) {
+  "baz" => "qux",
+  "foo" => "bar",
+  "단팥" => [BencodexDictionary(2)]
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 44`] = `
+'BencodexDictionary(3) {
+  [Uint8Array] => "qux",
+  [Uint8Array] => "bar",
+  [Uint8Array] => [BencodexDictionary(2)]
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 45`] = `
+'BencodexDictionary(3) {
+  "foo" => "bar",
+  "baz" => "qux",
+  "단팥" => [BencodexDictionary(2)],
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 46`] = `
+'BencodexDictionary(3) {
+  [Uint8Array] => "bar",
+  [Uint8Array] => "qux",
+  [Uint8Array] => [BencodexDictionary(2)],
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 47`] = `
+'BencodexDictionary(3) {
+  "foo" => "bar",
+  "baz" => "qux",
+  "단팥" => [BencodexDictionary(2)]
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 48`] = `
+'BencodexDictionary(3) {
+  [Uint8Array] => "bar",
+  [Uint8Array] => "qux",
+  [Uint8Array] => [BencodexDictionary(2)]
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 49`] = `
+'BencodexDictionary(3) {
+  "baz" => "qux",
+  "foo" => "bar",
+  "단팥" => BencodexDictionary(2) {
+    "eggs" => "ham",
+    "spam" => "span",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 50`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    98,
+    97,
+    122,
+  ] => "qux",
+  Uint8Array(3) [
+    102,
+    111,
+    111,
+  ] => "bar",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165,
+  ] => BencodexDictionary(2) {
+    [Uint8Array] => "ham",
+    [Uint8Array] => "span",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 51`] = `
+'BencodexDictionary(3) {
+  "baz" => "qux",
+  "foo" => "bar",
+  "단팥" => BencodexDictionary(2) {
+    "eggs" => "ham",
+    "spam" => "span"
+  }
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 52`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    98,
+    97,
+    122
+  ] => "qux",
+  Uint8Array(3) [
+    102,
+    111,
+    111
+  ] => "bar",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165
+  ] => BencodexDictionary(2) {
+    [Uint8Array] => "ham",
+    [Uint8Array] => "span"
+  }
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 53`] = `
+'BencodexDictionary(3) {
+  "foo" => "bar",
+  "baz" => "qux",
+  "단팥" => BencodexDictionary(2) {
+    "spam" => "span",
+    "eggs" => "ham",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 54`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    102,
+    111,
+    111,
+  ] => "bar",
+  Uint8Array(3) [
+    98,
+    97,
+    122,
+  ] => "qux",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165,
+  ] => BencodexDictionary(2) {
+    [Uint8Array] => "span",
+    [Uint8Array] => "ham",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 55`] = `
+'BencodexDictionary(3) {
+  "foo" => "bar",
+  "baz" => "qux",
+  "단팥" => BencodexDictionary(2) {
+    "spam" => "span",
+    "eggs" => "ham"
+  }
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 56`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    102,
+    111,
+    111
+  ] => "bar",
+  Uint8Array(3) [
+    98,
+    97,
+    122
+  ] => "qux",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165
+  ] => BencodexDictionary(2) {
+    [Uint8Array] => "span",
+    [Uint8Array] => "ham"
+  }
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 57`] = `
+'BencodexDictionary(3) {
+  "baz" => "qux",
+  "foo" => "bar",
+  "단팥" => BencodexDictionary(2) {
+    "eggs" => "ham",
+    "spam" => "span",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 58`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    98,
+    97,
+    122,
+  ] => "qux",
+  Uint8Array(3) [
+    102,
+    111,
+    111,
+  ] => "bar",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165,
+  ] => BencodexDictionary(2) {
+    Uint8Array(4) [
+      101,
+      103,
+      103,
+      115,
+    ] => "ham",
+    Uint8Array(4) [
+      115,
+      112,
+      97,
+      109,
+    ] => "span",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 59`] = `
+'BencodexDictionary(3) {
+  "baz" => "qux",
+  "foo" => "bar",
+  "단팥" => BencodexDictionary(2) {
+    "eggs" => "ham",
+    "spam" => "span"
+  }
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 60`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    98,
+    97,
+    122
+  ] => "qux",
+  Uint8Array(3) [
+    102,
+    111,
+    111
+  ] => "bar",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165
+  ] => BencodexDictionary(2) {
+    Uint8Array(4) [
+      101,
+      103,
+      103,
+      115
+    ] => "ham",
+    Uint8Array(4) [
+      115,
+      112,
+      97,
+      109
+    ] => "span"
+  }
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 61`] = `
+'BencodexDictionary(3) {
+  "foo" => "bar",
+  "baz" => "qux",
+  "단팥" => BencodexDictionary(2) {
+    "spam" => "span",
+    "eggs" => "ham",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 62`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    102,
+    111,
+    111,
+  ] => "bar",
+  Uint8Array(3) [
+    98,
+    97,
+    122,
+  ] => "qux",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165,
+  ] => BencodexDictionary(2) {
+    Uint8Array(4) [
+      115,
+      112,
+      97,
+      109,
+    ] => "span",
+    Uint8Array(4) [
+      101,
+      103,
+      103,
+      115,
+    ] => "ham",
+  },
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 63`] = `
+'BencodexDictionary(3) {
+  "foo" => "bar",
+  "baz" => "qux",
+  "단팥" => BencodexDictionary(2) {
+    "spam" => "span",
+    "eggs" => "ham"
+  }
+}'
+`;
+
+snapshot[`RecordView > [Deno.customInspect]() 64`] = `
+'BencodexDictionary(3) {
+  Uint8Array(3) [
+    102,
+    111,
+    111
+  ] => "bar",
+  Uint8Array(3) [
+    98,
+    97,
+    122
+  ] => "qux",
+  Uint8Array(6) [
+    235,
+    139,
+    168,
+    237,
+    140,
+    165
+  ] => BencodexDictionary(2) {
+    Uint8Array(4) [
+      115,
+      112,
+      97,
+      109
+    ] => "span",
+    Uint8Array(4) [
+      101,
+      103,
+      103,
+      115
+    ] => "ham"
+  }
+}'
+`;

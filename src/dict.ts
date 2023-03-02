@@ -14,12 +14,47 @@ import {
   encode,
 } from "https://deno.land/std@0.177.0/encoding/base64.ts";
 import {
+  compareKeys,
   type Dictionary,
   isDictionary,
   type Key,
   type Value,
 } from "./types.ts";
 import { areUint8ArraysEqual } from "./utils.ts";
+
+function inspectDictionary(
+  dictionary: Dictionary,
+  typeName: string,
+  inspect: (_: unknown, options: unknown) => string,
+  options: {
+    compact: boolean;
+    depth: number;
+    sorted: boolean;
+    trailingComma: boolean;
+  },
+) {
+  let s = `${typeName}(${dictionary.size})`;
+  if (options.depth < 1) return `[${s}]`;
+  const nextOptions = { ...options, depth: options.depth - 1 };
+  const entries: (readonly [Key, Value])[] = [...dictionary];
+  if (options.sorted) entries.sort(([a], [b]) => compareKeys(a, b));
+  const entryStrings = entries.map(
+    ([k, v]) => [inspect(k, nextOptions), inspect(v, nextOptions)],
+  );
+  const compact = options.compact &&
+    !entryStrings.some(([k, v]) => k.includes("\n") || v.includes("\n"));
+  s += compact ? " { " : " {\n";
+  let first = true;
+  for (const [key, value] of entryStrings) {
+    if (!first) s += compact ? ", " : ",\n";
+    if (!compact) s += "  ";
+    s += `${key.replaceAll("\n", "\n  ")} => ${value.replaceAll("\n", "\n  ")}`;
+    first = false;
+  }
+  if (options.trailingComma && !compact) s += ",";
+  s += compact ? " }" : "\n}";
+  return s;
+}
 
 const SHORT_BINARY_THRESHOLD = 32;
 
@@ -194,16 +229,32 @@ export class BencodexDictionary implements Dictionary {
     }
   }
 
-  [Symbol.for("Deno.customInspect")](inspect: (_: unknown) => string) {
-    let s = "BencodexDictionary { ";
-    let first = true;
-    for (const [key, value] of this) {
-      if (!first) s += ", ";
-      s += `${inspect(key)}: ${inspect(value)}`;
-      first = false;
-    }
-    s += " }";
-    return s;
+  [Symbol.for("Deno.customInspect")](
+    inspect: (_: unknown, options: unknown) => string,
+    options: {
+      compact: boolean;
+      depth: number;
+      sorted: boolean;
+      trailingComma: boolean;
+    },
+  ): string {
+    return inspectDictionary(this, "BencodexDictionary", inspect, options);
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")](
+    _: number,
+    options: {
+      compact: number | boolean;
+      depth: number;
+      sorted: boolean;
+    },
+    inspect: (_: unknown, options: unknown) => string,
+  ): string {
+    return inspectDictionary(this, "BencodexDictionary", inspect, {
+      ...options,
+      compact: options.compact !== false,
+      trailingComma: false,
+    });
   }
 }
 
@@ -397,7 +448,31 @@ export class RecordView implements Dictionary {
     }
   }
 
-  [Symbol.for("Deno.customInspect")](inspect: (_: unknown) => string) {
-    return `RecordView { ${inspect(this.#record)}`;
+  [Symbol.for("Deno.customInspect")](
+    inspect: (_: unknown, options: unknown) => string,
+    options: {
+      compact: boolean;
+      depth: number;
+      sorted: boolean;
+      trailingComma: boolean;
+    },
+  ): string {
+    return inspectDictionary(this, "BencodexDictionary", inspect, options);
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")](
+    _: number,
+    options: {
+      compact: number | boolean;
+      depth: number;
+      sorted: boolean;
+    },
+    inspect: (_: unknown, options: unknown) => string,
+  ): string {
+    return inspectDictionary(this, "BencodexDictionary", inspect, {
+      ...options,
+      compact: options.compact !== false,
+      trailingComma: false,
+    });
   }
 }
