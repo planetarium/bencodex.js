@@ -6,7 +6,7 @@ Changelog
 Version 0.1.1
 -------------
 
-To be released.
+Released on March 3, 2023.
 
  -  `BencodexDictionary` and `RecordView` now shows easier inspection
      representions on the eyes both on Deno ([`Deno.inspect()`]) and
