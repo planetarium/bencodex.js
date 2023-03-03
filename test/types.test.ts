@@ -4,10 +4,13 @@ import {
   assertStrictEquals,
   assertThrows,
 } from "std/testing/asserts.ts";
-import { BencodexDictionary } from "../src/dict.ts";
+import { BencodexDictionary, RecordView } from "../src/dict.ts";
 import {
+  areDictionariesEqual,
   areKeysEqual,
+  areValuesEqual,
   compareKeys,
+  Dictionary,
   isDictionary,
   isKey,
   Key,
@@ -184,5 +187,149 @@ Deno.test("compareKeys()", () => {
   assertThrows(
     () => compareKeys(new Uint8Array(), 123 as unknown as string),
     TypeError,
+  );
+});
+
+Deno.test("areDictionariesEqual()", () => {
+  assert(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "text"),
+      new Map<Key, Value>([["foo", 1n], ["bar", 2n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "text"),
+      new Map<Key, Value>([["foo", 1n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "text"),
+      new Map<Key, Value>([["foo", 1n], ["baz", 3n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n }, "text"),
+      new Map<Key, Value>([["foo", 1n], ["bar", 2n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "text"),
+      new Map<Key, Value>([["foo", 1n], ["bar", 3n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "utf8"),
+      new Map<Key, Value>([["foo", 1n], ["bar", 2n]]),
+    ),
+  );
+  const utf8Foo = new Uint8Array([0x66, 0x6f, 0x6f]);
+  const utf8Bar = new Uint8Array([0x62, 0x61, 0x72]);
+  assert(
+    areDictionariesEqual(
+      new BencodexDictionary([[utf8Foo, 1n], [utf8Bar, 2n]]),
+      new RecordView({ foo: 1n, bar: 2n }, "utf8"),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new BencodexDictionary([[utf8Foo, 1n], [utf8Bar, 2n]]),
+      new RecordView({ foo: 1n }, "utf8"),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new BencodexDictionary([[utf8Foo, 1n]]),
+      new RecordView({ foo: 1n, bar: 2n }, "utf8"),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new BencodexDictionary([[utf8Foo, 1n], [utf8Bar, 2n]]),
+      new RecordView({ foo: 1n, bar: 3n }, "utf8"),
+    ),
+  );
+  assert(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "utf8"),
+      new Map<Key, Value>([[utf8Foo, 1n], [utf8Bar, 2n]]),
+    ),
+  );
+  assert(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "utf8"),
+      new Map<Key, Value>([[utf8Foo, 1n], [utf8Bar, 2n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n }, "utf8"),
+      new Map<Key, Value>([[utf8Foo, 1n], [utf8Bar, 2n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 2n }, "utf8"),
+      new Map<Key, Value>([[utf8Foo, 1n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(
+      new RecordView({ foo: 1n, bar: 3n }, "utf8"),
+      new Map<Key, Value>([[utf8Foo, 1n], [utf8Bar, 2n]]),
+    ),
+  );
+  assertFalse(
+    areDictionariesEqual(new Map<Key, Value>(), null as unknown as Dictionary),
+  );
+  assertFalse(
+    areDictionariesEqual(null as unknown as Dictionary, new Map<Key, Value>()),
+  );
+});
+
+Deno.test("areValuesEqual()", () => {
+  assert(areValuesEqual(null, null));
+  assertFalse(areValuesEqual(null, true));
+  assertFalse(areValuesEqual(false, null));
+  assert(areValuesEqual(true, true));
+  assert(areValuesEqual(false, false));
+  assertFalse(areValuesEqual(true, false));
+  assertFalse(areValuesEqual(false, true));
+  assert(areValuesEqual(123n, 123n));
+  assertFalse(areValuesEqual(123n, -123n));
+  assert(areValuesEqual("text", "text"));
+  assertFalse(areValuesEqual("text", "another text"));
+  assertFalse(areValuesEqual("text", new Uint8Array([])));
+  assert(areValuesEqual(new Uint8Array([1, 2, 3]), new Uint8Array([1, 2, 3])));
+  assertFalse(
+    areValuesEqual(new Uint8Array([1, 2, 3]), new Uint8Array([1, 2, 4])),
+  );
+  assert(areValuesEqual([1n, 2n, 3n], [1n, 2n, 3n]));
+  assertFalse(areValuesEqual([1n, 2n, 3n], [1n, 2n]));
+  assertFalse(areValuesEqual([1n, 2n, 3n], [1n, 2n, 4n]));
+  assertFalse(areValuesEqual([1n, 2n, 3n], [1n, 3n, 2n]));
+  const utf8Foo = new Uint8Array([0x66, 0x6f, 0x6f]);
+  const utf8Bar = new Uint8Array([0x62, 0x61, 0x72]);
+  assert(
+    areValuesEqual(
+      [1n, [2n, 3n], new RecordView({ foo: 1n, bar: 2n }, "utf8")],
+      [1n, [2n, 3n], new Map([[utf8Foo, 1n], [utf8Bar, 2n]])],
+    ),
+  );
+  assertFalse(
+    areValuesEqual(
+      [1n, [2n, 3n], new RecordView({ foo: 1n, bar: 2n }, "utf8")],
+      [1n, [2n, 4n], new Map([[utf8Foo, 1n], [utf8Bar, 2n]])],
+    ),
+  );
+  assertFalse(
+    areValuesEqual(
+      [1n, [2n, 3n], new RecordView({ foo: 1n, baz: 2n }, "utf8")],
+      [1n, [2n, 3n], new Map([[utf8Foo, 1n], [utf8Bar, 2n]])],
+    ),
   );
 });

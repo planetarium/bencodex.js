@@ -5,6 +5,7 @@
  * @module
  */
 
+import { BencodexDictionary } from "./dict.ts";
 import { areUint8ArraysEqual, compareUint8Arrays } from "./utils.ts";
 
 /**
@@ -147,7 +148,7 @@ export function isKey(value: unknown): value is Key {
  * @param b Another key to compare.
  * @returns `true` iff the given keys have the same type and the same contents.
  *          It returns `false` when the given keys have invalid types even if
- *          they have the same contents, e.g., `areKeysEqual(1, 1)` returns
+ *          they have the same contents, e.g., `areKeysEqual(1n, 1n)` returns
  *          `false`.
  */
 export function areKeysEqual(a: Key, b: Key): boolean {
@@ -179,4 +180,76 @@ export function compareKeys(a: Key, b: Key): number {
     throw new TypeError(`Invalid key type: ${typeof b}`);
   }
   throw new TypeError(`Invalid key type: ${typeof a}`);
+}
+
+/**
+ * Checks if the given Bencodex dictionaries have the same keys and the same
+ * associated values.  In other words, this function checks if the given
+ * dictionaries are encoded in the same Bencodex data.
+ * @param a A dictionary to compare.
+ * @param b Another dictionary to compare.
+ * @returns `true` iff the given dictionaries have the same keys and the same
+ *          associated values.  It returns `false` when the given dictionaries
+ *          have invalid types even if they have the same keys and the same
+ *          associated values, e.g., `areDictionariesEqual(1n, 1n)` returns
+ *          `false`.
+ */
+export function areDictionariesEqual(a: Dictionary, b: Dictionary): boolean {
+  if (!isDictionary(a) || !isDictionary(b)) return false;
+  if (a.size !== b.size) return false;
+  let otherEntries: undefined | (readonly [Key, Value])[];
+  for (const [key, value] of a) {
+    if (typeof key === "string") {
+      const otherValue = b.get(key);
+      if (typeof otherValue === "undefined") return false;
+      if (!areValuesEqual(value, otherValue)) return false;
+    } else {
+      let otherValue = b.get(key);
+      // As not every Dictionary implementation guarantees they compare binary
+      // keys by their contents rather than by their references (e.g., Map),
+      // we can't rely on their get() or has() methods for binary keys:
+      if (typeof otherValue === "undefined") {
+        if (otherEntries === undefined) otherEntries = [...b.entries()];
+        for (const [bKey, bVal] of otherEntries) {
+          if (areKeysEqual(key, bKey)) {
+            otherValue = bVal;
+            break;
+          }
+        }
+      }
+      if (typeof otherValue === "undefined") return false;
+      if (!areValuesEqual(value, otherValue)) return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Checks if the given Bencodex values have the same type and the same contents.
+ * In other words, this function checks if the given values are encoded in the
+ * same Bencodex data.
+ * @param a A Bencodex value to compare.
+ * @param b Another Bencodex value to compare.
+ * @returns `true` iff the given values have the same type and the same
+ *          contents.  It returns `false` when the given values have invalid
+ *          types even if they have the same contents, e.g., `areValuesEqual(1,
+ *          1)` returns `false` (since `number`s are not a valid Bencodex type).
+ */
+export function areValuesEqual(a: Value, b: Value): boolean {
+  if (a === null && b === null) return true;
+  if (
+    typeof a === "boolean" && typeof b === "boolean" ||
+    typeof a === "bigint" && typeof b === "bigint"
+  ) return a === b;
+  if (isKey(a) && isKey(b)) return areKeysEqual(a, b);
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    return a.every((v, i) => areValuesEqual(v, b[i]));
+  }
+  // Note that areDictionariesEqual() checks the types of the given values
+  // at runtime, and it returns false when the given values aren't dictionaries:
+  return areDictionariesEqual(
+    a as unknown as Dictionary,
+    b as unknown as Dictionary,
+  );
 }
