@@ -12,6 +12,9 @@
     "strict": true
   },
   "fmt": {
+    "files": {
+      "exclude": ["npm/", "spec/"]
+    },
     "options": {
       "lineWidth": 80
     }
