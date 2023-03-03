@@ -12,6 +12,8 @@ jobs:
       DENO_DIR: /tmp/.deno
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: true
     - uses: denoland/setup-deno@v1
     - uses: actions/cache@v3
       with:
@@ -31,6 +33,8 @@ jobs:
       DENO_DIR: /tmp/.deno
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: true
     - uses: denoland/setup-deno@v1
     - uses: actions/setup-node@v3
       with:
