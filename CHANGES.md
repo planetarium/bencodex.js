@@ -6,7 +6,7 @@ Changelog
 Version 0.2.0
 -------------
 
-To be released.
+Released on March 3, 2023.
 
  -  Added [`areValuesEqual()`][] function.
  -  Added [`areDictionariesEqual()`][] function.
