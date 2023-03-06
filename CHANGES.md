@@ -6,7 +6,7 @@ Changelog
 Version 0.2.1
 -------------
 
-To be released.
+Released on March 6, 2023.
 
  -  Fixed a bug that [`areValuesEqual()`] and [`areDictionariesEqual()`] were
     not re-exported from *mod.ts* and npm [@planetarium/bencodex] package.
