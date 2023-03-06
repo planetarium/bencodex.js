@@ -6,22 +6,27 @@ Changelog
 Version 0.2.2
 -------------
 
-To be released.
-
-
-Version 0.2.1
--------------
-
-Released on March 6, 2023.
+Released on March 6, 2023.  This is a hotfix of 0.2.1.
 
  -  Fixed a bug that [`areValuesEqual()`] and [`areDictionariesEqual()`] were
     not re-exported from *mod.ts* and npm [@planetarium/bencodex] package.
 
 [`areValuesEqual()`]:
-https://deno.land/x/bencodex@0.2.1/mod.ts?s=areValuesEqual
+https://deno.land/x/bencodex@0.2.2/mod.ts?s=areValuesEqual
 [`areDictionariesEqual()`]:
-https://deno.land/x/bencodex@0.2.1/mod.ts?s=areDictionariesEqual
+https://deno.land/x/bencodex@0.2.2/mod.ts?s=areDictionariesEqual
 [@planetarium/bencodex]: https://www.npmjs.com/package/@planetarium/bencodex
+
+
+Version 0.2.1
+-------------
+
+Released on March 6, 2023.  This release was mistaken.  Don't use this version,
+and use 0.2.2 instead.
+
+ -  <del>Fixed a bug that [`areValuesEqual()`] and [`areDictionariesEqual()`]
+    were not re-exported from *mod.ts* and npm [@planetarium/bencodex]
+    package.</del>
 
 
 Version 0.2.0
