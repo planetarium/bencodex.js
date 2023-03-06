@@ -26,7 +26,9 @@ export {
   type NonAllocEncodingOptions,
 } from "./src/encoder.ts";
 export {
+  areDictionariesEqual,
   areKeysEqual,
+  areValuesEqual,
   type Dictionary,
   isDictionary,
   isKey,
