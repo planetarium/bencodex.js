@@ -14,6 +14,13 @@ import { areUint8ArraysEqual, compareUint8Arrays } from "./utils.ts";
  * ("binary" in Bencodex).
  *
  * Note that every {@link Key} is also a {@link Value} (not vice versa).
+ *
+ * Here are examples of valid {@link Key} values:
+ *
+ * ```typescript
+ * let text: Key = "key";
+ * let binary: Key = new Uint8Array([0x6b, 0x65, 0x79]);
+ * ```
  */
 export type Key = string | Uint8Array;
 
@@ -23,12 +30,36 @@ export type Key = string | Uint8Array;
  *
  * - `null` represents Bencodex's null
  * - `boolean` represents Bencodex's Boolean
- * - `bigint` represents Bencodex's integer
+ * - `bigint` represents Bencodex's integer (note that `number` is not a valid
+ *   type for Bencodex's integer)
  * - `string` represents Bencodex's text
  * - `Uint8Array` represents Bencodex's binary
  * - `Value[]` represents Bencodex's list
  * - {@link Dictionary} represents Bencodex's dictionary (note that it is not
  *   a concrete type, but an interface)
+ *
+ * Here are examples of valid {@link Value}s:
+ *
+ * ```typescript
+ * let null_: Value = null;
+ * let bool: Value = true;
+ * let integer: Value = 123n;  // note that it ends with suffix `n`
+ * let text: Value = "value";
+ * let binary: Value = new Uint8Array([0x76, 0x61, 0x6c, 0x75, 0x65]);
+ * let list: Value = [
+ *   null,
+ *   true,
+ *   123n,
+ *   "value",
+ *   new Uint8Array([0x76, 0x61, 0x6c, 0x75, 0x65]),
+ *   [],
+ *   new Map(),
+ * ];
+ * let dictionary: Value = new Map([
+ *   ["string key", list],
+ *   [new Uint8Array([0x6b, 0x65, 0x79]), "<- binary key"]
+ * ]);
+ * ```
  */
 export type Value = null | boolean | bigint | Key | List | Dictionary;
 
@@ -113,6 +144,8 @@ export interface Dictionary extends Iterable<readonly [Key, Value]> {
 
 /**
  * Checks if the given value is a Bencodex dictionary.
+ *
+ * In TypeScript, this function can be used as a type guard.
  * @param value The value to check.
  * @returns `true` iff the given value is a Bencodex dictionary.
  */
@@ -132,6 +165,8 @@ export function isDictionary(value: unknown): value is Dictionary {
 
 /**
  * Checks if the given value can be used as a key in a Bencodex dictionary.
+ *
+ * In TypeScript, this function can be used as a type guard.
  * @param value The value to check.
  * @returns `true` iff the given value can be used as a key in a Bencodex
  *          dictionary.
@@ -162,12 +197,15 @@ export function areKeysEqual(a: Key, b: Key): boolean {
 
 /**
  * Compares two keys in the specified order in the Bencodex specification.
+ *
+ * This function can be passed to `Array.prototype.sort()` to sort keys in the
+ * order specified in the Bencodex specification.
  * @param a A key to compare.
  * @param b Another key to compare.
  * @returns A negative number if `a` is former than `b`, zero if `a` is equal to
  *         `b`, or a positive number if `a` is latter than `b`.
  * @throws {TypeError} When any of the given keys is neither a `string` nor
- *         a {@link Uint8Array}.
+ *         a `Uint8Array`.
  */
 export function compareKeys(a: Key, b: Key): number {
   if (typeof a === "string") {

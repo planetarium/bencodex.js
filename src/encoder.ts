@@ -265,7 +265,7 @@ export function encodeInto(
  * @returns The object which indicates the number of bytes written into the
  *          buffer and whether the encoding is complete.
  * @throws {TypeError} When the given key is neither a `string` nor
- *         a {@link Uint8Array}.
+ *         a `Uint8Array`.
  */
 export function encodeKeyInto(
   key: Key,
@@ -404,7 +404,7 @@ export function estimateSize(
  * @param options Options for size estimation.
  * @returns The estimated byte size of the given key.
  * @throws {TypeError} When the given key is neither a `string` nor
- *         a {@link Uint8Array}.
+ *         a `Uint8Array`.
  */
 export function estimateKeySize(
   key: Key,

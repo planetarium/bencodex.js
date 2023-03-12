@@ -1,7 +1,7 @@
 /**
  * This module provides a {@link BencodexDictionary} class which implements
  * {@link Dictionary} interface.  Although an encoder can take any object
- * implementing the {@link Dictionary} interface (e.g., a {@link Map} object),
+ * implementing the {@link Dictionary} interface (e.g., a `Map` object),
  * a decoder always represents a Bencodex dictionary as
  * a {@link BencodexDictionary} so that it can guarantee the sensible behavior
  * according to the Bencodex specification.
@@ -60,9 +60,9 @@ const SHORT_BINARY_THRESHOLD = 32;
 
 /**
  * A {@link Dictionary} implementation that complies with the Bencodex
- * specification.  Unlike {@link Map}, this implementation allows only keys of
+ * specification.  Unlike `Map`, this implementation allows only keys of
  * type {@link Key} and values of type {@link Value}, and in particular,
- * it actually compares {@link Uint8Array} keys by their contents instead of
+ * it actually compares `Uint8Array` keys by their contents instead of
  * their references.
  *
  * Note that this implementation does not guarantee the stable order of entries;
@@ -263,6 +263,17 @@ export class BencodexDictionary implements Dictionary {
  *
  * Note that its values can be either {@link Value} or {@link RecordValue}
  * recursively.
+ *
+ * Here's an example of a valid {@link RecordValue}:
+ *
+ * ```typescript
+ * let record: Record = {
+ *   "key": "value",
+ *   "nested": {
+ *     "key": "value",
+ *   },
+ * };
+ * ```
  */
 export interface RecordValue {
   [key: string]: Value | RecordValue;
