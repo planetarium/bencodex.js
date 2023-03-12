@@ -13,13 +13,13 @@ This library is an alternative take on implementing [Bencodex] in JavaScript.
 It focused to address the following problems from the existing JavaScript
 implementation(s):
 
- -  *No Node.js-only APIs*:  It does not depend on Node.js-only APIs such as
-    [`Buffer`].  Usable with web browsers, Deno, and Node.js.
+ -  *No Node.js-specific APIs*:  It does not depend on Node.js-specific APIs
+    such as [`Buffer`].  Usable with web browsers, Deno, and Node.js.
 
  -  *Static-time and runtime type safety*:  It is fully written in TypeScript,
-    and promise us, we use [`any`] nowhere, and it never trusts any data from
+    and promise you, we use [`any`] nowhere, and it never trusts any data from
     external sources thoughtlessly.  Instead, it tries to parse data and
-    validate them whenever it read data from external sources.  It's not only
+    validate them whenever it reads data from external sources.  It's not only
     written in TypeScript, it also has runtime checks here and there so that
     you could use it in vanilla JavaScript without fear.
 

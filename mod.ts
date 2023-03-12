@@ -1,7 +1,7 @@
 /**
  * This façade module exports the public API of this package.
  *
- * @example Encoding a Bencodex list and decoding it back
+ * @example Encoding a Bencodex dictionary and decoding it back
  *
  * ```typescript
  * const encoded = encode(new Map([["foo", 123n]]));
