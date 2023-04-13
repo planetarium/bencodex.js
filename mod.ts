@@ -24,6 +24,7 @@ export {
   type EncodingOptions,
   estimateSize,
   type NonAllocEncodingOptions,
+  type SizeEstimationOptions,
 } from "./src/encoder.ts";
 export {
   areDictionariesEqual,

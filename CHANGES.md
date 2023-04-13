@@ -8,6 +8,8 @@ Version 0.3.0
 
 To be released.
 
+ -  Added `SizeEstimationOptions` interface.
+
 
 Version 0.2.2
 -------------
